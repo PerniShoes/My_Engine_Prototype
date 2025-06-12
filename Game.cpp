@@ -407,8 +407,29 @@ void Game::Rendering()
 	
 	
 	RenderFromStruct(m_BackgroundTexture, m_BackgroundTextureProp);	
-	
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
 
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+
+
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
 
 
 	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
