@@ -131,6 +131,7 @@ bool Game::LoadMedia()
 	m_Audio.LoadAudio();
 	//m_Textures.loadTextures();
 
+
 	m_TestTextTexture.setFont(TTF_OpenFont("Fonts/lazy.ttf", 28));
 	if (m_TestTextTexture.getFont() == NULL)
 	{
@@ -404,10 +405,12 @@ void Game::Rendering()
 	
 	m_Textures.render(TextureHandler::Foo);
 	
-	
+	// TEST KURWA TEST
 	
 	RenderFromStruct(m_BackgroundTexture, m_BackgroundTextureProp);	
+	
 	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+
 
 	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
 	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
