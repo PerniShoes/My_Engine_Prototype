@@ -11,7 +11,6 @@
 #include <cmath>
 
 #include <Debug.h>
-#include "SDL_My_Texture.h"
 #include "Audio.h"
 #include "TextureHandler.h"
 
@@ -47,28 +46,6 @@ class Game
 		void HandleMouseEvents();
 		void HandleKeyEvents();
 
-		void ModifyTexture(SDL_My_Texture& texture, float scale = 1.0f, SDL_RendererFlip flipType = SDL_FLIP_NONE, double angle = 0.0, SDL_Point* center = NULL);	
-
-		struct m_Texture
-		{
-			SDL_Point pos;
-			SDL_Point* rotationCenter;
-			double rotationDegrees;
-			SDL_RendererFlip flipType;
-			SDL_Color color;
-			float scale;
-			Uint8 alpha;
-
-			// animation for now:
-			int frameSlow; // Need a better name
-			SDL_Rect* currentClip;
-			int currentFrame;
-		};
-		
-		int m_TestInt;
-
-		void RenderFromStruct(SDL_My_Texture& texture, m_Texture& textureStruct);
-
 		enum BackGroundSprite
 		{
 			MOUSE_OUT = 0,
@@ -92,17 +69,6 @@ class Game
 		int m_Value;
 		//
 		
-
-		m_Texture m_BackgroundTextureProp;
-		SDL_My_Texture m_BackgroundTexture;
-
-		m_Texture m_FooAnimatedTextureProp;
-		SDL_My_Texture m_FooAnimatedTexture;
-
-		m_Texture m_TestTextTextureProp;
-		SDL_My_Texture m_TestTextTexture;
-
-
 		//animation
 		static const int M_WALKING_ANIMATION_FRAMES = 4;
 		SDL_Rect m_WalkingSpriteClips[M_WALKING_ANIMATION_FRAMES];
