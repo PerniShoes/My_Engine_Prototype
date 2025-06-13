@@ -40,7 +40,7 @@ void Audio::PlaySound(SoundsList soundId, int loopAmount, int channel) const
 {
     Mix_MasterVolume(15);
 
-    Mix_PlayChannel(channel, m_Sound[(int)soundId], loopAmount);
+    Mix_PlayChannel(channel, m_Sound[static_cast<int>(soundId)], loopAmount);
     
 };
 
@@ -64,21 +64,21 @@ void Audio::PlayMusic(MusicList musicId, int loopAmount)
     }
     else if(!Mix_PlayingMusic())
     {
-        Mix_PlayMusic(m_Music[(int)musicId], loopAmount);
-        AdjustVolume((int)musicId);
+        Mix_PlayMusic(m_Music[static_cast<int>(musicId)], loopAmount);
+        AdjustVolume(static_cast<int>(musicId));
     }
      
 };
 
 void Audio::Free()
 {
-    for (int i{ 0 }; i < (int)TotalSounds; i++)
+    for (int i{ 0 }; i < static_cast<int>(TotalSounds); i++)
     {
         Mix_FreeChunk(m_Sound[i]);
         m_Sound[i] = NULL; 
     };
     
-    for (int i{ 0 }; i < (int)TotalMusic; i++)
+    for (int i{ 0 }; i < static_cast<int>(TotalMusic); i++)
     {
         Mix_FreeMusic(m_Music[i]);
         m_Music[i] = NULL;
@@ -149,7 +149,7 @@ void Audio::AdjustVolume(int musicId) const
         Mix_VolumeMusic(m_Volume.Gold);
         break;
     case 11:
-        Mix_VolumeMusic(m_Volume.Hold); 
+        Mix_VolumeMusic(m_Volume.Hold);     
         break;
     default:
         Mix_VolumeMusic(64);
@@ -162,12 +162,12 @@ bool Audio::LoadAudio()
 {
     bool success = true;
 
-    for (int i{ 0 }; i < (int)TotalSounds; i++)
+    for (int i{ 0 }; i < static_cast<int>(TotalSounds); i++)
     {
         success = LoadWAV(m_Sound[i], m_SoundPath[i]);
     }   
 
-    for (int i{ 0 }; i < (int)TotalMusic; i++)
+    for (int i{ 0 }; i < static_cast<int>(TotalMusic); i++)
     {
        success = LoadMusic(m_Music[i], m_MusicPath[i]);
     }

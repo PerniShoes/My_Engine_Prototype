@@ -374,7 +374,7 @@ void Game::Rendering()
 	m_Textures.setRotate(Foo, 0.0);
 	//m_Textures.setFlip(Foo, SDL_FLIP_VERTICAL);
 
-	//m_Textures.setColor(Foo, SDL_Color{ 125,125,125 });
+	//m_Textures.setColor(Foo, SDL_Color{ 125,125,125 }); 
 
 	//m_Textures.setAlpha(Foo, 125);
 	//m_Textures.setBlendMode(Foo, SDL_BLENDMODE_BLEND);	
