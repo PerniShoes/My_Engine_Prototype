@@ -6,9 +6,47 @@
 #include <string>
 #include "Debug.h"
 
+enum class SoundsList
+{
+	ScratchSound = 0,
+	HighSound = 1,
+	MediumSound = 2,
+	LowSound = 3,
+
+	TotalSounds = 4
+
+};
+
+enum class MusicList
+{
+	StopMusic = -2,
+	PauseOrResume = -1,
+
+	DefaultMusic = 0,
+	HolyF = 1,
+	Pandemonium = 2,
+	GimmeLove = 3,
+	AreYouGonnaBeMyGirl = 4,
+	WezPigulke = 5,
+	ALittleMessedUp = 6,
+	BeautifulMadness = 7,
+	ImComing = 8,
+	ThatsWhatILike = 9,
+	Gold = 10,
+	Hold = 11,
+
+
+	TotalMusic = 12
+};
+
+using enum MusicList;
+using enum SoundsList;
+
+
 class Audio
 {
 public:
+
 
 	Audio();
 	~Audio();
@@ -18,41 +56,9 @@ public:
 
 
 	bool LoadAudio();
-	void PlaySound(int soundId, int loopAmount = 0, int channel = -1)const;
-	void PlayMusic(int musicId, int loopAmount = 10);
+	void PlaySound(SoundsList soundId, int loopAmount = 0, int channel = -1)const;
+	void PlayMusic(MusicList musicId, int loopAmount = 10);
 
-	typedef enum
-	{
-		Scratch = 0,
-		High = 1,
-		Medium = 2,
-		Low = 3,
-
-		TotalSounds = 4	
-
-	}Sounds;
-
-	typedef enum
-	{
-		Stop = -2,
-		PauseOrResume = -1,
-
-		DefaultMusic = 0,
-		HolyF = 1,
-		Pandemonium = 2,
-		GimmeLove = 3,
-		AreYouGonnaBeMyGirl = 4,
-		WezPigulke = 5,
-		ALittleMessedUp = 6,
-		BeautifulMadness = 7,
-		ImComing = 8,
-		ThatsWhatILike = 9,
-		Gold = 10,
-		Hold = 11,
-
-
-		TotalMusic = 12
-	}Music;
 
 	struct VolumeList
 	{
@@ -81,11 +87,11 @@ private:
 	bool LoadMusic(Mix_Music*& musicStorage, const std::string& path);
 	void Free();
 
-	Mix_Chunk* m_Sound[TotalSounds]{};
-	const char* m_SoundPath[TotalSounds]{};
+	Mix_Chunk* m_Sound[(int)SoundsList::TotalSounds]{};	
+	const char* m_SoundPath[(int)TotalSounds]{};
 
-	Mix_Music* m_Music[TotalMusic]{};
-	const char* m_MusicPath[TotalMusic]{};
+	Mix_Music* m_Music[(int)MusicList::TotalMusic]{};		
+	const char* m_MusicPath[(int)TotalMusic]{};	
 
 };
 

@@ -50,21 +50,6 @@ void Game::ObjectInit()
 	m_Quit = false;
 	m_E = { 0 };
 
-	m_BackgroundTextureProp.color = SDL_Color{ 255,255,255 };
-	m_BackgroundTextureProp.pos = SDL_Point{ 0,0 };
-
-
-
-	m_TestTextTextureProp.scale = 1.5f;
-	m_TestTextTextureProp.pos = SDL_Point{ 100,400 };
-
-	m_FooAnimatedTextureProp.frameSlow = 8;
-	m_FooAnimatedTextureProp.currentClip = &m_WalkingSpriteClips[m_FooAnimatedTextureProp.currentFrame / m_FooAnimatedTextureProp.frameSlow];
-	m_FooAnimatedTextureProp.pos = SDL_Point{ 200,100 };
-	m_FooAnimatedTextureProp.scale = 1.0f;
-	m_FooAnimatedTextureProp.rotationCenter = NULL;
-	m_FooAnimatedTextureProp.currentFrame = 0;
-
 
 };
 
@@ -128,39 +113,17 @@ bool Game::LoadMedia()
 {
 	bool success = true;
 	
-	m_Audio.LoadAudio();
-	//m_Textures.loadTextures();
+	success = m_Audio.LoadAudio();
 
-
-	m_TestTextTexture.setFont(TTF_OpenFont("Fonts/lazy.ttf", 28));
-	if (m_TestTextTexture.getFont() == NULL)
+	if (!success)
 	{
-		Debug::Print("Failed to load lazy font! SDL_ttf Error: %s", TTF_GetError(),"\n");
-		success = false;
-	}
-	else
-	{
-
-		if (!m_TestTextTexture.loadFromRenderedText("THIS IS MADNESSSSSSSSS"))
-		{
-			Debug::Print("Failed to render text texture!\n");
-			success = false;
-		}
+		Debug::Print("Audio failed to initialize!\n");
 	}
 
-
-	if (!m_FooAnimatedTexture.loadFromFile("Images/foo_animated.png", 1))
+	success = m_Textures.loadTextures();
+	if (!success)
 	{
-		success = false;
-	}
-	else
-	{
-		m_FooAnimatedTexture.setBlendMode(SDL_BLENDMODE_BLEND);
-	}
-
-	if (!m_BackgroundTexture.loadFromFile("Images/Background.png"))	
-	{
-		success = false;
+		Debug::Print("Textures failed to initialize!\n");
 	}
 
 	return success;
@@ -192,7 +155,6 @@ void Game::GameLoop()
 
 };
 
-
 void Game::Events()
 {
 	HandleMouseEvents();
@@ -208,88 +170,88 @@ void Game::HandleKeyEvents()
 		switch (m_E.key.keysym.sym)
 		{
 		case SDLK_1:	
-			m_Audio.PlaySound(Audio::Low);			
+			m_Audio.PlaySound(LowSound);
 			break;
 		case SDLK_2:
-			m_Audio.PlaySound(Audio::High);	
+			m_Audio.PlaySound(HighSound);
 			break;
 		case SDLK_3:
-			m_Audio.PlaySound(Audio::Medium);		
+			m_Audio.PlaySound(MediumSound);
 			break;
 		case SDLK_4:
-			m_Audio.PlaySound(Audio::Scratch);		
+			m_Audio.PlaySound(ScratchSound);
 			break;
 		case SDLK_p:	
-			m_Audio.PlayMusic(Audio::PauseOrResume); 
+			m_Audio.PlayMusic(PauseOrResume); 
 			break;
 		case SDLK_m:		
-			m_Audio.PlayMusic(Audio::DefaultMusic);
+			m_Audio.PlayMusic(DefaultMusic);
 			break;
 		case SDLK_o:	
-			m_Audio.PlayMusic(Audio::Stop);	
+			m_Audio.PlayMusic(StopMusic);	
 			break;
 		case SDLK_u:
-			m_Audio.PlayMusic(Audio::HolyF);	
+			m_Audio.PlayMusic(HolyF);	
 			break;
 		case SDLK_i:
-			m_Audio.PlayMusic(Audio::GimmeLove);	
+			m_Audio.PlayMusic(GimmeLove);	
 			break;	
 		case SDLK_y:
-			m_Audio.PlayMusic(Audio::Pandemonium);	
+			m_Audio.PlayMusic(Pandemonium);	
 			break;
 		case SDLK_t:
-			m_Audio.PlayMusic(Audio::AreYouGonnaBeMyGirl);
+			m_Audio.PlayMusic(AreYouGonnaBeMyGirl);
 			break;
 		case SDLK_l:
-			m_Audio.PlayMusic(Audio::WezPigulke);
+			m_Audio.PlayMusic(WezPigulke);
 			break;
 		case SDLK_k:
-			m_Audio.PlayMusic(Audio::Hold);
+			m_Audio.PlayMusic(Hold);
 			break;
 		case SDLK_j:
-			m_Audio.PlayMusic(Audio::Gold);
+			m_Audio.PlayMusic(Gold);
 			break;
 		case SDLK_h:
-			m_Audio.PlayMusic(Audio::ThatsWhatILike);
+			m_Audio.PlayMusic(ThatsWhatILike);
 			break;
 		case SDLK_g:
-			m_Audio.PlayMusic(Audio::ImComing);
+			m_Audio.PlayMusic(ImComing);
 			break;
 		case SDLK_r:
-			m_Audio.PlayMusic(Audio::BeautifulMadness);
+			m_Audio.PlayMusic(BeautifulMadness);
 			break;
 		case SDLK_f:
-			m_Audio.PlayMusic(Audio::ALittleMessedUp);
+			m_Audio.PlayMusic(ALittleMessedUp);
 			break;
 		case SDLK_q:
-			m_FooAnimatedTextureProp.rotationDegrees += m_Value;
+			//m_FooAnimatedTextureProp.rotationDegrees += m_Value;
 			break;
 		case SDLK_a:
-			m_FooAnimatedTextureProp.rotationDegrees -= m_Value;
+			//m_FooAnimatedTextureProp.rotationDegrees -= m_Value;
 			break;
 		case SDLK_s:
-			m_BackgroundTextureProp.color.r += m_Value;
+			//m_BackgroundTextureProp.color.r += m_Value;
 			break;
 		case SDLK_w:
-			m_BackgroundTextureProp.color.g -= m_Value;
+			//m_BackgroundTextureProp.color.g -= m_Value;
 			break;
 		case SDLK_e:
-			m_BackgroundTextureProp.color.b -= m_Value;
+			//m_BackgroundTextureProp.color.b -= m_Value;
 			break;
 		case SDLK_UP:
-			m_FooAnimatedTextureProp.alpha += m_Value;
+			//m_FooAnimatedTextureProp.alpha += m_Value;
 			break;
 		case SDLK_DOWN:
-			m_FooAnimatedTextureProp.alpha -= m_Value;
+			//m_FooAnimatedTextureProp.alpha -= m_Value;
 			break;
 		case SDLK_LEFT:
-			m_FooAnimatedTextureProp.flipType = SDL_FLIP_HORIZONTAL;
+			//m_FooAnimatedTextureProp.flipType = SDL_FLIP_HORIZONTAL;
 			break;
 		case SDLK_RIGHT:
-			m_FooAnimatedTextureProp.flipType = SDL_FLIP_NONE;
+			//m_FooAnimatedTextureProp.flipType = SDL_FLIP_NONE;
 			break;
 		case SDLK_0:
-			m_FooAnimatedTextureProp.flipType = SDL_FLIP_VERTICAL;
+			//m_FooAnimatedTextureProp.flipType = SDL_FLIP_VERTICAL;
 			break;
 
 
@@ -306,53 +268,53 @@ void Game::HandleMouseEvents()
 		SDL_GetMouseState(&m_MousePosX, &m_MousePosY);
 		m_MouseInside = true;
 
-		if (m_MousePosX < 0)
-		{
-			m_MouseInside = false;
-		}
-		else if (m_MousePosY < 0)
-		{
-			m_MouseInside = false;
-		}
-		else if (m_MousePosY > 0 + m_BackgroundTexture.getHeight())
-		{
-			m_MouseInside = false;
-		}
-		else if (m_MousePosX > 0 + m_BackgroundTexture.getWidth())
-		{
-			m_MouseInside = false;
-		}
+	//	if (m_MousePosX < 0)
+	//	{
+	//		m_MouseInside = false;
+	//	}
+	//	else if (m_MousePosY < 0)
+	//	{
+	//		m_MouseInside = false;
+	//	}
+	//	else if (m_MousePosY > 0 + m_BackgroundTexture.getHeight())
+	//	{
+	//		m_MouseInside = false;
+	//	}
+	//	else if (m_MousePosX > 0 + m_BackgroundTexture.getWidth())
+	//	{
+	//		m_MouseInside = false;
+	//	}
 
-		if (!m_MouseInside)
-		{
-			m_BackgroundCheck = MOUSE_OUT;
-		}
-		else
-		{
-			switch (m_E.type)
-			{
-			case SDL_MOUSEMOTION:
-				m_BackgroundCheck = MOUSE_OVER_MOTION;
-				break;
-			case SDL_MOUSEBUTTONDOWN:
-				m_BackgroundCheck = MOUSE_DOWN;
-				break;
-			case SDL_MOUSEBUTTONUP:
-				m_BackgroundCheck = MOUSE_UP;
-				break;
+	//	if (!m_MouseInside)
+	//	{
+	//		m_BackgroundCheck = MOUSE_OUT;
+	//	}
+	//	else
+	//	{
+	//		switch (m_E.type)
+	//		{
+	//		case SDL_MOUSEMOTION:
+	//			m_BackgroundCheck = MOUSE_OVER_MOTION;
+	//			break;
+	//		case SDL_MOUSEBUTTONDOWN:
+	//			m_BackgroundCheck = MOUSE_DOWN;
+	//			break;
+	//		case SDL_MOUSEBUTTONUP:
+	//			m_BackgroundCheck = MOUSE_UP;
+	//			break;
 
-			}
+	//		}
 
-		}
-	}
-	if (m_MouseInside == true)
-	{
-		m_BackgroundTexture.setColor((m_BackgroundTextureProp.color));
-	}
-	else
-	{
-		SDL_Color darker = SDL_Color{ 125,125,125 };	
-		m_BackgroundTexture.setColor(darker);	
+	//	}
+	//}
+	//if (m_MouseInside == true)
+	//{
+	//	m_BackgroundTexture.setColor((m_BackgroundTextureProp.color));
+	//}
+	//else
+	//{
+	//	SDL_Color darker = SDL_Color{ 125,125,125 };	
+	//	m_BackgroundTexture.setColor(darker);	
 	}
 
 };
@@ -360,7 +322,8 @@ void Game::HandleMouseEvents()
 
 void Game::Logic()
 {
-	
+
+
 	switch (m_BackgroundCheck)
 	{
 	case MOUSE_DOWN:
@@ -402,74 +365,42 @@ void Game::Rendering()
 	
 	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
 	SDL_RenderClear(Renderer::GetRenderer());
+
+	SDL_Rect test{ 0,0,64,205 };
+
+	m_Textures.render(Background);
+	m_Textures.setClip(Foo, &test);
+	m_Textures.setScale(Foo, 1.0f);
+	m_Textures.setRotate(Foo, 0.0);
+	//m_Textures.setFlip(Foo, SDL_FLIP_VERTICAL);
+
+	//m_Textures.setColor(Foo, SDL_Color{ 125,125,125 }); 
+
+	//m_Textures.setAlpha(Foo, 125);
+	//m_Textures.setBlendMode(Foo, SDL_BLENDMODE_BLEND);	
+
+	m_Textures.setScaleAll(0.5f);
+
+	m_Textures.setPos(Foo, SDL_Point{ 0,0 });
+	m_Textures.render(Foo);
+
+	m_Textures.setPos(Background, SDL_Point{ 100,100 });
+	m_Textures.setPos(MainText);
+	m_Textures.setPos(FuckEverything);
 	
-	m_Textures.render(TextureHandler::Foo);
+	m_Textures.setPos(Hero);
 	
-	// TEST KURWA TEST
+	//m_Textures.setScale(FuckEverything, 0.3f);
+
+	m_Textures.render(Background);
+	m_Textures.render(MainText);
+	m_Textures.render(FuckEverything);
+	m_Textures.render(Hero);
 	
-	RenderFromStruct(m_BackgroundTexture, m_BackgroundTextureProp);	
-	
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-
-
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-
-
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-
-
 	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
 	SDL_RenderSetViewport(Renderer::GetRenderer(), NULL);
 
-	//m_FooAnimatedTexture.render(m_TestTextTextureProp.pos);
-	//RenderFromStruct(m_TestTextTexture, m_TestTextTextureProp);
-	//RenderFromStruct(m_FooAnimatedTexture, m_FooAnimatedTextureProp);
-
 	SDL_RenderPresent(Renderer::GetRenderer());
-
-};
-
-void Game::ModifyTexture(SDL_My_Texture& texture, float scale, SDL_RendererFlip flipType, double angle, SDL_Point* center )
-{
-	texture.scale(scale);	
-	texture.flip(flipType);	
-	texture.rotate(angle, center);	
-
-};
-
-void Game::RenderFromStruct(SDL_My_Texture& texture, m_Texture& textureStruct)
-{
-	// Scale flip or rotate don't happen every frame. Probablly should make them more like:
-	// X happens, THEN scale, NOT: scale everyframe and just change scale sometimes
-	// So ModyfiTexture is good, but shouldn't be called everyframe (UNLESS needed)
-	 
-	// Should be done with logic checks, e.g: Mario picks up Red mushroom
-	// In Events: PickedUpRedMushroom = true; 
-	// Later in Logic: if(PickedUpRedMushroom){DestroyRedMushroom(); m_Textures.setScale(Mario, 2.0f); Set up power up timer}
-
-	ModifyTexture(texture,
-		textureStruct.scale,
-		textureStruct.flipType,
-		textureStruct.rotationDegrees, textureStruct.rotationCenter);
-
-	texture.render(textureStruct.pos, textureStruct.currentClip);
 
 };
 
@@ -477,10 +408,7 @@ void Game::RenderFromStruct(SDL_My_Texture& texture, m_Texture& textureStruct)
 void Game::Close()
 {
 	
-	m_TestTextTexture.~SDL_My_Texture();	
-	m_FooAnimatedTexture.~SDL_My_Texture();	
-	m_BackgroundTexture.~SDL_My_Texture();	
-
+	m_Textures.~TextureHandler();
 	m_Audio.~Audio();
 	TTF_Quit();	
 	IMG_Quit();	

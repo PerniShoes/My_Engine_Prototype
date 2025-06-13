@@ -18,6 +18,21 @@
 	// 
 	// Or if feeling fancy (DON'T xD!) I could have things like setAlphaMany(textureId listOfIds); to apply something to many at once
 
+
+enum class TextureList
+{
+	Background = 0,
+	Foo = 1,
+	MainText = 2,
+	FuckEverything = 3,
+	Hero = 4,
+
+	TotalTextures = 5
+	
+};
+
+using enum TextureList;
+
 class TextureHandler
 {
 public:
@@ -28,64 +43,44 @@ public:
 	TextureHandler(const TextureHandler&) = delete;
 	TextureHandler& operator = (const TextureHandler&) = delete;
 
-	typedef enum
-	{
-		Background = 0,
-		Foo = 1,
-		MainText = 2,
-
-		TotalTextures = 3
-
-	}TextureList;
-
-
-	//void render(SDL_Point pos, SDL_Rect* clip = NULL);
+	/* PDN:
 	
-	void setColor(int textureId, SDL_Color color);
-	void setAlpha(int textureId, Uint8 alpha);
-	void setBlendMode(int textureId, SDL_BlendMode blendMode);
-
-
-	void setScale(int textureId, float ratio = 1.0f);
-	void setFlip(int textureId, SDL_RendererFlip flip = SDL_FLIP_NONE);
-	void setRotate(int textureId, double angle = 0.0, SDL_Point* center = NULL);
-
-	// PDN  TTF_Font* getFont(int textureId);
+	TTF_Font* getFont(int textureId);
 
 	SDL_Rect getRect(int textureId);
-	void setPos(int x, int y); // SDL_Point maybe
-	
+	*/
 
-
-//	void RenderFromStruct(SDL_My_Texture& texture, m_Texture& textureStruct);
-
-	
 	//
 
 	//animation
 	//static const int M_WALKING_ANIMATION_FRAMES = 4;
 	//SDL_Rect m_WalkingSpriteClips[M_WALKING_ANIMATION_FRAMES];
 
+	//Done
+	bool loadTextures();
+	void setClip(TextureList textureId, SDL_Rect* clip = NULL);
+	void render(TextureList textureId) const;
+	void setPos(TextureList textureId, SDL_Point currentPos = SDL_Point{ 0,0 }, SDL_Point change = SDL_Point{ 0,0 });
+	void transform(TextureList textureId, 
+		float scale = 1.0f, SDL_RendererFlip flipType = SDL_FLIP_NONE, 
+		double angle = 0.0, SDL_Point* center = NULL);
 
-	void render(int textureId);
 
-	void loadTextures();
+	void setScaleAll(float ratio = 1.0f);
+	void setScale(TextureList textureId, float ratio = 1.0f);
+	void setColor(TextureList textureId, SDL_Color color) const;
+	void setAlpha(TextureList textureId, Uint8 alpha) const;
+	void setBlendMode(TextureList textureId, SDL_BlendMode blendMode) const;
+
+	void setFlip(TextureList textureId, SDL_RendererFlip flipType = SDL_FLIP_NONE);
+	void setRotate(TextureList textureId, double angle = 0.0, SDL_Point* center = NULL);
+
 private:
-
-	bool loadFromFile(const	std::string& path, int colorKeyFlag = 1, SDL_Color colorKey = SDL_Color{255,255,255});	
-	bool loadFromRenderedText(const std::string& textureText);
-
-
-
-
 
 	// Done
 		
-	void initText(int textureId, const char* text, int ptSize = 24, SDL_Color color = { 255, 255, 255 });
-
-	//SDL_Surface*& createSurface(const char* &texturePaths, int textureId);	
-	void createTextureFromSurface(const char* texturePaths,int textureId);
-
+	void initText(TextureList textureId, const char* text, int ptSize = 24, SDL_Color color = { 255, 255, 255 });
+	bool createTextureFromSurface(const char* texturePaths, TextureList textureId);
 	void freeResources();
 
 	struct TextureProperties
@@ -104,7 +99,6 @@ private:
 		SDL_Color m_Color;
 		Uint8 m_Alpha;
 
-
 		// Animation 
 		int m_FrameSlow;
 		SDL_Rect* m_CurrentClip;
@@ -118,8 +112,8 @@ private:
 
 	};	
 
-	TextureProperties m_TextureProperties[TotalTextures]{};
-	SDL_Texture* m_Texture[TotalTextures]{};		
+	TextureProperties m_TextureProperties[static_cast<int>(TotalTextures)]{};
+	SDL_Texture* m_Texture[static_cast<int>(TotalTextures)]{};
 
 
 };

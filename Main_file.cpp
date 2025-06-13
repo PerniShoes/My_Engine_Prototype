@@ -22,7 +22,7 @@ int main(int argc, char* args[])
 		else
 		{
 
-			GameInstance.GameLoop();
+			GameInstance.GameLoop(); 
 
 			GameInstance.Close();
 			
