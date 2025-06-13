@@ -381,7 +381,7 @@ void Game::Rendering()
 
 	m_Textures.setScaleAll(0.5f);
 
-	m_Textures.setPos(Foo, SDL_Point{ 0,0 });
+	m_Textures.setPos(Foo, SDL_Point{ 0,0 }); 
 	m_Textures.render(Foo);
 
 	m_Textures.setPos(Background, SDL_Point{ 100,100 });
