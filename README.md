@@ -14,6 +14,6 @@ My first bigger project. After finishing it I plan on making few smaller games i
 
 ### Current state:
 - Audio working
-- Texture handler close to done
-- Physics engine not yet started
+- Texture handler (texture refactor) DONE!
+- Physics engine will be started in the next few days
 #
