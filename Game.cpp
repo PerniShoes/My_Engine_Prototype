@@ -2,7 +2,7 @@
 
 Game::Game()
 	: m_Quit{ false }, m_E{ 0 }, m_BackgroundCheck{ MOUSE_OUT },
-	m_MousePosX{ 0 }, m_MousePosY{ 0 }, m_MouseInside{ false }, m_Speed{ 0 }, m_PosChangeTemp{ 0 }
+	m_MousePosX{ 0 }, m_MousePosY{ 0 }, m_MouseInside{ false }, m_Speed{ 0 }, m_PosChangeTemp{ 0 }, m_Player{ 0,0,5 }
 {
 
 	
@@ -123,6 +123,7 @@ void Game::Events()
 
 void Game::HandleKeyEvents()
 {
+	m_Player.handleEvent(m_E);
 
 	m_Speed = 1;
 	if (m_E.type == SDL_KEYDOWN)
@@ -193,24 +194,30 @@ void Game::HandleKeyEvents()
 			//m_BackgroundTextureProp.color.r += m_Value;
 			break;
 		case SDLK_w:
+			whichFrame = 0;
 			//m_BackgroundTextureProp.color.g -= m_Value;
 			break;
 		case SDLK_e:
+			whichFrame = 5;
 			//m_BackgroundTextureProp.color.b -= m_Value;
 			break;
 		case SDLK_UP:
+			whichFrame = 3;
 			m_PosChangeTemp.y -= m_Speed;
 			//m_FooAnimatedTextureProp.alpha += m_Value;
 			break;
 		case SDLK_DOWN:
+			whichFrame = 2;
 			m_PosChangeTemp.y += m_Speed;
 			//m_FooAnimatedTextureProp.alpha -= m_Value;
 			break;
 		case SDLK_LEFT:
+			whichFrame = 1;
 			m_PosChangeTemp.x -= m_Speed;
 			//m_FooAnimatedTextureProp.flipType = SDL_FLIP_HORIZONTAL;
 			break;
 		case SDLK_RIGHT:
+			whichFrame = 4;
 			m_PosChangeTemp.x += m_Speed;
 			//m_FooAnimatedTextureProp.flipType = SDL_FLIP_NONE;
 			break;
@@ -283,7 +290,6 @@ void Game::HandleMouseEvents()
 
 };
 
-
 void Game::Logic()
 {
 
@@ -306,6 +312,8 @@ void Game::Logic()
 		break;
 	}
 
+	m_Player.setSize(m_Textures.getRect(PongPlayer).h, m_Textures.getRect(PongPlayer).w);
+	m_Player.move();
 
 	/*
 
@@ -331,31 +339,25 @@ void Game::Rendering()
 	SDL_SetRenderDrawColor(Renderer::GetRenderer(), black.r, black.g, black.b, black.a);
 	SDL_RenderClear(Renderer::GetRenderer());
 
+	/*m_Textures.setScale(BackgroundAlien, 2.0f);
+	m_Textures.setPos(BackgroundAlien, { 0, -150 });
+	m_Textures.setCurrentClip(BackgroundAlien, whichFrame);
+	m_Textures.render(BackgroundAlien);*/
+
+	m_Textures.setScale(PongPlayer,5.0f);
+	m_Textures.setPos(PongPlayer, m_Player.getPosition());
+	m_Textures.render(PongPlayer);
+	Debug::Print("X: ", m_Player.getPosition().x, "\n", "Y: ",m_Player.getPosition().y, "\n");
 
 
-	m_Textures.setPos(FuckEverything, SDL_Point{ 0,0 });
-	m_Textures.setScale(FuckEverything, 0.3f);
-	m_Textures.render(FuckEverything);
-
-	m_Textures.setScaleAll(1.0f);
-
-
-	float speed{ 12.0f + m_PosChangeTemp.x };
-
-	m_Textures.setScale(BlueEffects, 3.0f);
-	m_Textures.setPos(BlueEffects, SDL_Point{ 500, 130 });
-	m_Textures.animate(BlueEffects, 30, speed);
-	m_Textures.render(BlueEffects);
-
-
-	m_Textures.setPos(LumberJackMove, SDL_Point{ 700, 100 });
-	m_Textures.animate(LumberJackMove, 1, speed);
-	m_Textures.render(LumberJackMove);
-
+	m_Textures.setPos(PongBall, { 200, 200 });
+	m_Textures.render(PongBall);
 
 
 	m_Textures.changeText(TimeText,  m_Time.getTimePassedFull()); 
-	m_Textures.setPos(TimeText, SDL_Point{250+ m_PosChangeTemp.x, 200+ m_PosChangeTemp.y });
+	m_Textures.setPos(TimeText, SDL_Point{
+		(Window::GetWindowSize().x/2-100),
+		50});
 	m_Textures.render(TimeText);
 
 

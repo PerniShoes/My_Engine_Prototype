@@ -12,6 +12,8 @@ public:
     TimeHandler();
     ~TimeHandler();
 
+    TimeHandler(const TimeHandler&) = delete;
+    TimeHandler& operator = (const TimeHandler&) = delete;
 
     void startTime();
 

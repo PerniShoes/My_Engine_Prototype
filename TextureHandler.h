@@ -33,8 +33,11 @@ enum class TextureList
 	BlueEffects = 7,
 	LumberJackMove = 8,
 	Tiles = 9,
+	BackgroundAlien = 10,
+	PongBall = 11,
+	PongPlayer = 12,
 
-	TotalTextures = 10
+	TotalTextures = 13
 	
 };
 
@@ -60,7 +63,7 @@ public:
 
 
 	void setScaleAll(float ratio = 1.0f);
-	void setScale(TextureList textureId, float ratio = 1.0f);
+	void setScale(TextureList textureId, float ratio = 1.0f); // Add functionality to only scale x or y
 	void setColor(TextureList textureId, SDL_Color color) const;
 	void setAlpha(TextureList textureId, Uint8 alpha) const;
 	void setBlendMode(TextureList textureId, SDL_BlendMode blendMode) const;
@@ -73,6 +76,8 @@ public:
 	// 5 6 7 8 9
 	void animate(TextureList textureId, int spriteNumber, float speed = 12.0f);
 	void changeText(TextureList textureId, std::string text); // Can add Color and Font changeability	
+	void setCurrentClip(TextureList textureId, int frameNumber);
+	SDL_Rect getRect(TextureList textureId);
 
 private:
 
@@ -89,7 +94,6 @@ private:
 	 
 	// Even rows with even framesPerAnim OR just one row
 	void setClipList(TextureList textureId, int rowAmount, int columnAmount, int framesPerAnimation);
-	void setCurrentClip(TextureList textureId, int frameNumber);
 
 
 	void freeResources();

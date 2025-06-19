@@ -14,6 +14,7 @@
 #include "Audio.h"
 #include "TextureHandler.h"
 #include "TimeHandler.h"
+#include "Player.h"
 
 class Game
 {
@@ -38,6 +39,7 @@ class Game
 		Audio m_Audio;	
 		TextureHandler m_Textures;
 		TimeHandler m_Time;
+		Player m_Player;
 
 		void Events();
 		void Logic();
@@ -71,6 +73,6 @@ class Game
 		int m_Speed; 
 		SDL_Point m_PosChangeTemp;
 		
-	
+		int whichFrame{ 0 };
 		//
 };
