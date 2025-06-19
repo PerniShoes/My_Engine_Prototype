@@ -1,9 +1,9 @@
 #include "TextureHandler.h"
 
-
 TextureHandler::TextureHandler()
+
 {
-	
+
 };
 
 TextureHandler::~TextureHandler()
@@ -11,51 +11,78 @@ TextureHandler::~TextureHandler()
 	freeResources();
 };
 
-void TextureHandler::initText(TextureList textureId, const char* text, int ptSize, SDL_Color color)
+void TextureHandler::setAllPaths()
 {
-	int textureIdInt = static_cast<int>(textureId);
-	m_TextureProperties[textureIdInt].m_IsText = true;
-	m_TextureProperties[textureIdInt].m_Text = text;	
-	m_TextureProperties[textureIdInt].m_PtSize = ptSize;	
-	m_TextureProperties[textureIdInt].m_Color = color;	
-};
+	// Obviously not good code, too much repetition, change later:
 
-bool TextureHandler::loadTextures()		
-{
-	bool success = true;
-	const char* texturePaths[static_cast<int>(TotalTextures)]{};
 	// Images
-	texturePaths[static_cast<int>(Background)] = "Images/background.png";
-	texturePaths[static_cast<int>(Foo)] = "Images/foo_animated.png";
-	texturePaths[static_cast<int>(FuckEverything)] = "Images/fuck_everything.png";
-	texturePaths[static_cast<int>(Hero)] = "Images/Hero.bmp";
+	setPath(Background, "Images/background.png");
+	setPath(Foo, "Images/foo_animated.png");
+	setPath(FuckEverything, "Images/fuck_everything.png");
+	setPath(Hero, "Images/Hero.bmp");
 
+	// Sprite Sheets
+	setPath(LumberJackMove, "Images/LumberJackMove.png");
+	setClipProp(LumberJackMove, { 0,0, 140,140 });
+
+	setPath(FireProjectiles, "Images/500_Bullets/BulletsDrugie.png");
+	setClipProp(FireProjectiles, { 0,0,24,24 });
+
+	setPath(BlueEffects, "Images/VFX/BlueBulletsMINE.png");
+	setClipProp(BlueEffects, { 0,0,32,32 });
+
+	setPath(Tiles, "Images/Tiles.png");
+	setClipProp(Tiles, { 0, 0, 16, 48 });
 
 	// Fonts
-	texturePaths[static_cast<int>(MainText)] = "Fonts/lazy.ttf";
-	initText(MainText, "THIS IS MADNESS");	
+	setPath(MainText, "Fonts/lazy.ttf");
+	initText(MainText, "THIS IS MADNESS");
+	setFont(MainText);
+
+	setPath(TimeText, "Fonts/Digital Dismay.ttf");
+	initText(TimeText, "Place Holder", 48);
+	setFont(TimeText);
 
 
+}
+
+void TextureHandler::setPath(TextureList textureId, const char* text)
+{
+	m_TextureProperties[static_cast<int>(textureId)].m_Path = static_cast<std::string>(text);
+}
+
+void TextureHandler::setClipProp(TextureList textureId, SDL_Rect clipProp)
+{
+	m_TextureProperties[static_cast<int>(textureId)].m_ClipProp = clipProp;
+}
+
+bool TextureHandler::loadTextures()
+{
+	bool success = true;
+
+	setAllPaths();
 
 	for (int index{ 0 }; index < static_cast<int>(TotalTextures); index++)
 	{
-	m_TextureProperties[index].m_Scale = 1.0f;
-	success = createTextureFromSurface(texturePaths[index], static_cast<TextureList>(index));
+		m_TextureProperties[index].m_Scale = 1.0f;
+		success = createTextureFromSurface(static_cast<TextureList>(index));
+
+		if (success == false)
+		{
+			return success;
+		}
 	}
+
+	setClipList(BlueEffects, 16, 8, 4);
+	setClipList(FireProjectiles, 15, 24, 8);
+	setClipList(LumberJackMove, 4, 6, 6);
+	setClipList(Tiles, 1, 24, 24);
 
 	return success;
 };
 
-void TextureHandler::setScaleAll(float ratio)
-{
-	for (int index{ 0 }; index < static_cast<int>(TotalTextures); index++)
-	{
-		m_TextureProperties[index].m_Scale = ratio;
-		
-	}
-}
 
-bool TextureHandler::createTextureFromSurface(const char* texturePaths, TextureList textureId)
+bool TextureHandler::createTextureFromSurface(TextureList textureId)
 {
 	SDL_Surface* surface;
 	bool success = true;
@@ -63,30 +90,35 @@ bool TextureHandler::createTextureFromSurface(const char* texturePaths, TextureL
 
 	if (m_TextureProperties[textureIdInt].m_IsText)
 	{
-		surface = TTF_RenderText_Solid(TTF_OpenFont(texturePaths, m_TextureProperties[textureIdInt].m_PtSize),
-			m_TextureProperties[textureIdInt].m_Text, m_TextureProperties[textureIdInt].m_Color);
+		surface = TTF_RenderText_Solid(m_TextureProperties[textureIdInt].m_Font,
+			m_TextureProperties[textureIdInt].m_Text.c_str(), m_TextureProperties[textureIdInt].m_Color);
 
 		if (surface == NULL)
 		{
-			Debug::Print("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+			Debug::Print("Unable to render text surface! TextureId: ", textureIdInt, " SDL_ttf Error : %s ", TTF_GetError(), "\n");
 			success = false;
 			return success;
 		}
 	}
 	else
 	{
-		surface = IMG_Load(texturePaths);
+		surface = IMG_Load(m_TextureProperties[textureIdInt].m_Path.c_str());
 
 		if (surface == NULL)
 		{
-			Debug::Print("Unable to load image from file %! SDL_image Error: %s ", IMG_GetError(), "\n");
+			Debug::Print("Unable to load image from file %! TextureId: ", textureIdInt, " SDL_image Error : %s ", IMG_GetError(), "\n");
 			success = false;
 			return success;
 		}
-		
+
+	}
+	if (m_Texture[textureIdInt] != NULL)
+	{
+		SDL_DestroyTexture(m_Texture[textureIdInt]);
 	}
 
 	m_Texture[textureIdInt] = SDL_CreateTextureFromSurface(Renderer::GetRenderer(), surface);
+
 	if (m_Texture[textureIdInt] == NULL)
 	{
 		Debug::Print("Unable to create Texture from Surface, textureId: ", textureIdInt, " SDL Error: %s\n", SDL_GetError());
@@ -94,10 +126,10 @@ bool TextureHandler::createTextureFromSurface(const char* texturePaths, TextureL
 		return success;
 	}
 	else
-		{	
-		m_TextureProperties[textureIdInt].m_Rect.w = surface->w;		
+	{
+		m_TextureProperties[textureIdInt].m_Rect.w = surface->w;
 		m_TextureProperties[textureIdInt].m_Rect.h = surface->h;
-		}
+	}
 
 	SDL_FreeSurface(surface);
 	return success;
@@ -106,23 +138,48 @@ bool TextureHandler::createTextureFromSurface(const char* texturePaths, TextureL
 
 void TextureHandler::freeResources()
 {
-	for (int index{ 0 }; index < (int)TotalTextures; index++)
+	for (int index{ 0 }; index < static_cast<int>(TotalTextures); index++)
 	{
-		if (m_TextureProperties[index].m_IsText)	
+		if (m_TextureProperties[index].m_IsText)
 		{
 			TTF_CloseFont(m_TextureProperties[index].m_Font);
-			m_TextureProperties[index].m_Font = NULL;	
+			m_TextureProperties[index].m_Font = NULL;
 
 			SDL_DestroyTexture(m_Texture[index]);
-			m_Texture[index] = NULL;	
+			m_Texture[index] = NULL;
 		}
 		else
 		{
 			SDL_DestroyTexture(m_Texture[index]);
-			m_Texture[index] = NULL;	
+			m_Texture[index] = NULL;
 		}
 	}
 }
+
+
+void TextureHandler::initText(TextureList textureId, const char* text, int ptSize, SDL_Color color)
+{
+	int textureIdInt = static_cast<int>(textureId);
+	m_TextureProperties[textureIdInt].m_IsText = true;
+	m_TextureProperties[textureIdInt].m_Text = static_cast<std::string>(text);	
+	m_TextureProperties[textureIdInt].m_PtSize = ptSize;
+	m_TextureProperties[textureIdInt].m_Color = color;
+
+};
+
+void TextureHandler::setFont(TextureList textureId)
+{
+	m_TextureProperties[static_cast<int>(textureId)].m_Font = TTF_OpenFont(
+		m_TextureProperties[static_cast<int>(textureId)].m_Path.c_str(),
+		m_TextureProperties[static_cast<int>(textureId)].m_PtSize);
+}
+
+void TextureHandler::changeText(TextureList textureId, std::string text)
+{
+	m_TextureProperties[static_cast<int>(textureId)].m_Text = static_cast<std::string>(text);
+	createTextureFromSurface(textureId);
+}
+
 
 void TextureHandler::render(TextureList textureId) const
 {
@@ -135,16 +192,16 @@ void TextureHandler::render(TextureList textureId) const
 		int(m_TextureProperties[textureIdInt].m_Rect.h * m_TextureProperties[textureIdInt].m_Scale)};
 
 
-	if (m_TextureProperties[textureIdInt].m_Clip != NULL)
+	if (m_TextureProperties[textureIdInt].m_CurrentClip != NULL)
 	{
-		renderQuad.w = int(m_TextureProperties[textureIdInt].m_Clip->w * m_TextureProperties[textureIdInt].m_Scale);
-		renderQuad.h = int(m_TextureProperties[textureIdInt].m_Clip->h * m_TextureProperties[textureIdInt].m_Scale);
+		renderQuad.w = int(m_TextureProperties[textureIdInt].m_CurrentClip->w * m_TextureProperties[textureIdInt].m_Scale);
+		renderQuad.h = int(m_TextureProperties[textureIdInt].m_CurrentClip->h * m_TextureProperties[textureIdInt].m_Scale);
 	}																						   
 
 	
 	SDL_RenderCopyEx(
 		Renderer::GetRenderer(), m_Texture[textureIdInt],
-		m_TextureProperties[textureIdInt].m_Clip,
+		m_TextureProperties[textureIdInt].m_CurrentClip,
 		&renderQuad,		
 		m_TextureProperties[textureIdInt].m_RotationDegrees,
 		m_TextureProperties[textureIdInt].m_RotationCenter,
@@ -163,6 +220,16 @@ void TextureHandler::setPos(TextureList textureId, SDL_Point currentPos, SDL_Poi
 {
 	m_TextureProperties[static_cast<int>(textureId)].m_Rect.x = (currentPos.x + change.x);
 	m_TextureProperties[static_cast<int>(textureId)].m_Rect.y = (currentPos.y + change.y);
+}
+
+
+void TextureHandler::setScaleAll(float ratio)
+{
+	for (int index{ 0 }; index < static_cast<int>(TotalTextures); index++)
+	{
+		m_TextureProperties[index].m_Scale = ratio;
+
+	}
 }
 
 void TextureHandler::setScale(TextureList textureId, float ratio)
@@ -196,7 +263,55 @@ void TextureHandler::setFlip(TextureList textureId, SDL_RendererFlip flipType)
 	m_TextureProperties[static_cast<int>(textureId)].m_FlipType = flipType;
 }
 
-void TextureHandler::setClip(TextureList textureId, SDL_Rect* clip)
+
+void TextureHandler::setCurrentClip(TextureList textureId, int frameNumber)
 {
-	m_TextureProperties[static_cast<int>(textureId)].m_Clip = clip;
+	m_TextureProperties[static_cast<int>(textureId)].m_CurrentClip = &m_TextureProperties[static_cast<int>(textureId)].m_ClipList[frameNumber];
 }
+
+void TextureHandler::setClipList(TextureList textureId, int rowAmount, int columnAmount, int framesPerAnimation)
+{
+SDL_Rect clipProp = m_TextureProperties[static_cast<int>(textureId)].m_ClipProp;
+
+m_TextureProperties[static_cast<int>(textureId)].m_FramesPerAnim = framesPerAnimation;
+
+	for (int columnIndex{ 0 }; columnIndex < rowAmount; columnIndex++)
+	{
+		for (int rowIndex{ 0 }; rowIndex < columnAmount; rowIndex++)
+		{
+			m_TextureProperties[static_cast<int>(textureId)].m_ClipList.push_back(
+				SDL_Rect{ 
+				clipProp.x + rowIndex *clipProp.w,
+				clipProp.y + columnIndex *clipProp.h,
+				clipProp.w,
+				clipProp.h });
+		}
+	}
+}
+
+void TextureHandler::animate(TextureList textureId, int spriteNumber, float speed)
+{
+	int spriteWanted = spriteNumber;
+	int textureIdInt = static_cast<int>(textureId);
+	spriteWanted = (spriteNumber * m_TextureProperties[textureIdInt].m_FramesPerAnim);
+	
+	float elapsedTime{ 0.0f };
+
+	elapsedTime = ((m_Time.getTimePassedInMs() - m_TextureProperties[textureIdInt].m_LastTick)/1000.0f);
+	//std::cout << elapsedTime << std::endl;
+
+	m_TextureProperties[textureIdInt].m_LastTick = static_cast<float>(m_Time.getTimePassedInMs());
+	
+	m_TextureProperties[textureIdInt].m_FrameCounter += (speed*elapsedTime);
+	if (textureIdInt == 8)
+	{
+		std::cout << m_TextureProperties[textureIdInt].m_FramesPerAnim << std::endl;
+	}
+	if (m_TextureProperties[textureIdInt].m_FrameCounter >= m_TextureProperties[textureIdInt].m_FramesPerAnim)
+
+	{
+		m_TextureProperties[textureIdInt].m_FrameCounter = 0.0f;
+	}
+	setCurrentClip(textureId, int(spriteWanted + m_TextureProperties[textureIdInt].m_FrameCounter));
+}
+

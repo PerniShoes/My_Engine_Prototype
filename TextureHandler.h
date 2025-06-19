@@ -1,10 +1,12 @@
 #pragma once // NOLINT
 #include <string>
+#include <vector>
 #include <cmath>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-
+	
+#include "TimeHandler.h"
 #include "Window.h"
 #include "Renderer.h"
 #include "Debug.h"
@@ -26,8 +28,13 @@ enum class TextureList
 	MainText = 2,
 	FuckEverything = 3,
 	Hero = 4,
+	FireProjectiles = 5,
+	TimeText = 6,
+	BlueEffects = 7,
+	LumberJackMove = 8,
+	Tiles = 9,
 
-	TotalTextures = 5
+	TotalTextures = 10
 	
 };
 
@@ -43,22 +50,8 @@ public:
 	TextureHandler(const TextureHandler&) = delete;
 	TextureHandler& operator = (const TextureHandler&) = delete;
 
-	/* PDN:
-	
-	TTF_Font* getFont(int textureId);
-
-	SDL_Rect getRect(int textureId);
-	*/
-
-	//
-
-	//animation
-	//static const int M_WALKING_ANIMATION_FRAMES = 4;
-	//SDL_Rect m_WalkingSpriteClips[M_WALKING_ANIMATION_FRAMES];
-
-	//Done
 	bool loadTextures();
-	void setClip(TextureList textureId, SDL_Rect* clip = NULL);
+
 	void render(TextureList textureId) const;
 	void setPos(TextureList textureId, SDL_Point currentPos = SDL_Point{ 0,0 }, SDL_Point change = SDL_Point{ 0,0 });
 	void transform(TextureList textureId, 
@@ -75,20 +68,41 @@ public:
 	void setFlip(TextureList textureId, SDL_RendererFlip flipType = SDL_FLIP_NONE);
 	void setRotate(TextureList textureId, double angle = 0.0, SDL_Point* center = NULL);
 
+	// SpriteNumber is counted from Left to right e.g:
+	// 0 1 2 3 4 
+	// 5 6 7 8 9
+	void animate(TextureList textureId, int spriteNumber, float speed = 12.0f);
+	void changeText(TextureList textureId, std::string text); // Can add Color and Font changeability	
+
 private:
 
-	// Done
-		
+	// Init:
+	void setAllPaths();
+	void setPath(TextureList textureId, const char* text);
+	void setClipProp(TextureList textureId, SDL_Rect clipProp);
+
+	bool createTextureFromSurface(TextureList textureId);
+
 	void initText(TextureList textureId, const char* text, int ptSize = 24, SDL_Color color = { 255, 255, 255 });
-	bool createTextureFromSurface(const char* texturePaths, TextureList textureId);
+	void setFont(TextureList textureId);
+	//Animation:
+	 
+	// Even rows with even framesPerAnim OR just one row
+	void setClipList(TextureList textureId, int rowAmount, int columnAmount, int framesPerAnimation);
+	void setCurrentClip(TextureList textureId, int frameNumber);
+
+
 	void freeResources();
 
+
+	// Not every texture will be animated/text etc. Right now every texture has all the variables -> not good
 	struct TextureProperties
 	{
 		// Base propeties
-		SDL_Rect m_Rect;
+		SDL_Rect m_Rect; // Pos + size
 		float m_Scale;	
-		SDL_Rect* m_Clip;
+		SDL_Rect* m_CurrentClip;
+		std::string m_Path;
 		
 		// Orientation
 		SDL_Point* m_RotationCenter;
@@ -100,14 +114,20 @@ private:
 		Uint8 m_Alpha;
 
 		// Animation 
+		SDL_Rect m_ClipProp;
 		int m_FrameSlow;
-		SDL_Rect* m_CurrentClip;
+		std::vector<SDL_Rect> m_ClipList;
 		int m_CurrentFrame;
+		int m_FramesPerAnim;
 
+		float m_LastTick;
+		float m_FrameCounter;
+
+	
 		// Text
 		bool m_IsText;
 		TTF_Font* m_Font;
-		const char* m_Text;
+		std::string m_Text;
 		int m_PtSize;
 
 	};	
@@ -115,6 +135,8 @@ private:
 	TextureProperties m_TextureProperties[static_cast<int>(TotalTextures)]{};
 	SDL_Texture* m_Texture[static_cast<int>(TotalTextures)]{};
 
+	TimeHandler m_Time;
+	
 
 };
 

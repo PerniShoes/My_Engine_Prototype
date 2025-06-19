@@ -1,55 +1,15 @@
 #include "Game.h"
 
-Game::Game()			
+Game::Game()
+	: m_Quit{ false }, m_E{ 0 }, m_BackgroundCheck{ MOUSE_OUT },
+	m_MousePosX{ 0 }, m_MousePosY{ 0 }, m_MouseInside{ false }, m_Speed{ 0 }, m_PosChangeTemp{ 0 }
 {
-	//Debug::Print("Game constructor called\n");
-	ObjectInit();
+
 	
 };
 
 Game::~Game()
 {
-
-};
-
-void Game::ObjectInit()
-{
-
-
-	m_WalkingSpriteClips[0].x = 0;
-	m_WalkingSpriteClips[0].y = 0;
-	m_WalkingSpriteClips[0].w = 64;
-	m_WalkingSpriteClips[0].h = 205;
-
-	m_WalkingSpriteClips[1].x = 64;
-	m_WalkingSpriteClips[1].y = 0;
-	m_WalkingSpriteClips[1].w = 64;
-	m_WalkingSpriteClips[1].h = 205;
-
-	m_WalkingSpriteClips[2].x = 128;
-	m_WalkingSpriteClips[2].y = 0;
-	m_WalkingSpriteClips[2].w = 64;
-	m_WalkingSpriteClips[2].h = 205;
-
-	m_WalkingSpriteClips[3].x = 192;
-	m_WalkingSpriteClips[3].y = 0;
-	m_WalkingSpriteClips[3].w = 64;
-	m_WalkingSpriteClips[3].h = 205;
-
-	m_BackgroundCheck = MOUSE_OUT;
-
-
-	m_MousePosX = 0;
-	m_MousePosY = 0;
-
-	m_Value = 10;
-
-
-	m_MouseInside = false;
-
-	m_Quit = false;
-	m_E = { 0 };
-
 
 };
 
@@ -114,7 +74,6 @@ bool Game::LoadMedia()
 	bool success = true;
 	
 	success = m_Audio.LoadAudio();
-
 	if (!success)
 	{
 		Debug::Print("Audio failed to initialize!\n");
@@ -160,11 +119,12 @@ void Game::Events()
 	HandleMouseEvents();
 	HandleKeyEvents();
 
-
 };
 
 void Game::HandleKeyEvents()
 {
+
+	m_Speed = 1;
 	if (m_E.type == SDL_KEYDOWN)
 	{
 		switch (m_E.key.keysym.sym)
@@ -239,15 +199,19 @@ void Game::HandleKeyEvents()
 			//m_BackgroundTextureProp.color.b -= m_Value;
 			break;
 		case SDLK_UP:
+			m_PosChangeTemp.y -= m_Speed;
 			//m_FooAnimatedTextureProp.alpha += m_Value;
 			break;
 		case SDLK_DOWN:
+			m_PosChangeTemp.y += m_Speed;
 			//m_FooAnimatedTextureProp.alpha -= m_Value;
 			break;
 		case SDLK_LEFT:
+			m_PosChangeTemp.x -= m_Speed;
 			//m_FooAnimatedTextureProp.flipType = SDL_FLIP_HORIZONTAL;
 			break;
 		case SDLK_RIGHT:
+			m_PosChangeTemp.x += m_Speed;
 			//m_FooAnimatedTextureProp.flipType = SDL_FLIP_NONE;
 			break;
 		case SDLK_0:
@@ -323,7 +287,6 @@ void Game::HandleMouseEvents()
 void Game::Logic()
 {
 
-
 	switch (m_BackgroundCheck)
 	{
 	case MOUSE_DOWN:
@@ -342,6 +305,8 @@ void Game::Logic()
 		m_BackgroundCheck = MOUSE_OUT;
 		break;
 	}
+
+
 	/*
 
 	const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
@@ -360,44 +325,43 @@ void Game::Logic()
 
 void Game::Rendering()
 {
+	SDL_Color black{ 0, 0, 0, 255 };
+	//SDL_Color white{ 255, 255, 255, 255 }; // Later have it separate so you don't need to change "white" bellow 4x times to change the color
 
-	SDL_Color white{ 0xFF, 0xFF, 0xFF, 0xFF }; // Later have it separate so you don't need to change "white" bellow 4x times to change the color
-	
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), black.r, black.g, black.b, black.a);
 	SDL_RenderClear(Renderer::GetRenderer());
 
-	SDL_Rect test{ 0,0,64,205 };
 
-	m_Textures.render(Background);
-	m_Textures.setClip(Foo, &test);
-	m_Textures.setScale(Foo, 1.0f);
-	m_Textures.setRotate(Foo, 0.0);
-	//m_Textures.setFlip(Foo, SDL_FLIP_VERTICAL);
 
-	//m_Textures.setColor(Foo, SDL_Color{ 125,125,125 }); 
-
-	//m_Textures.setAlpha(Foo, 125);
-	//m_Textures.setBlendMode(Foo, SDL_BLENDMODE_BLEND);	
-
-	m_Textures.setScaleAll(0.5f);
-
-	m_Textures.setPos(Foo, SDL_Point{ 0,0 }); 
-	m_Textures.render(Foo);
-
-	m_Textures.setPos(Background, SDL_Point{ 100,100 });
-	m_Textures.setPos(MainText);
-	m_Textures.setPos(FuckEverything);
-	
-	m_Textures.setPos(Hero);
-	
-	//m_Textures.setScale(FuckEverything, 0.3f);
-
-	m_Textures.render(Background);
-	m_Textures.render(MainText);
+	m_Textures.setPos(FuckEverything, SDL_Point{ 0,0 });
+	m_Textures.setScale(FuckEverything, 0.3f);
 	m_Textures.render(FuckEverything);
-	m_Textures.render(Hero);
-	
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+
+	m_Textures.setScaleAll(1.0f);
+
+
+	float speed{ 12.0f + m_PosChangeTemp.x };
+
+	m_Textures.setScale(BlueEffects, 3.0f);
+	m_Textures.setPos(BlueEffects, SDL_Point{ 500, 130 });
+	m_Textures.animate(BlueEffects, 30, speed);
+	m_Textures.render(BlueEffects);
+
+
+	m_Textures.setPos(LumberJackMove, SDL_Point{ 700, 100 });
+	m_Textures.animate(LumberJackMove, 1, speed);
+	m_Textures.render(LumberJackMove);
+
+
+
+	m_Textures.changeText(TimeText,  m_Time.getTimePassedFull()); 
+	m_Textures.setPos(TimeText, SDL_Point{250+ m_PosChangeTemp.x, 200+ m_PosChangeTemp.y });
+	m_Textures.render(TimeText);
+
+
+
+
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), black.r, black.g, black.b, black.a);
 	SDL_RenderSetViewport(Renderer::GetRenderer(), NULL);
 
 	SDL_RenderPresent(Renderer::GetRenderer());
@@ -416,42 +380,3 @@ void Game::Close()
 };
 
 
-
-
-
-/*void Game::Rendering()
-{
-
-	SDL_Color white{ 0xFF, 0xFF, 0xFF, 0xFF }; // Later have it separate so you don't need to change "white" bellow 4x times to change the color
-	//for (int i{}; i < 1000000; i++)
-	//{
-		SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-		SDL_RenderClear(Renderer::GetRenderer());
-	//}
-
-		//m_Textures.render(TextureHandler::Foo);
-
-		//RenderFromStruct(m_BackgroundTexture, m_BackgroundTextureProp);
-
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	SDL_RenderSetViewport(Renderer::GetRenderer(), NULL);
-
-	//RenderFromStruct(m_TestTextTexture, m_TestTextTextureProp);
-	//RenderFromStruct(m_FooAnimatedTexture, m_FooAnimatedTextureProp);
-
-	// animation:
-	m_FooAnimatedTextureProp.currentClip = &m_WalkingSpriteClips[m_FooAnimatedTextureProp.currentFrame / m_FooAnimatedTextureProp.frameSlow];
-
-	
-	SDL_RenderPresent(Renderer::GetRenderer());
-
-	// animation:
-
-	++m_FooAnimatedTextureProp.currentFrame;
-
-	if (m_FooAnimatedTextureProp.currentFrame / m_FooAnimatedTextureProp.frameSlow >= M_WALKING_ANIMATION_FRAMES)
-	{
-		m_FooAnimatedTextureProp.currentFrame = 0;
-	}
-
-};*/
