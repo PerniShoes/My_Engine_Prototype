@@ -15,24 +15,26 @@ Audio::~Audio()
 
 void Audio::SetPaths()
 {
-    // This needs to be better. Too much static_cast
-    m_SoundPath[static_cast<int>(ScratchSound)] = "Audio/Sounds/scratch.wav";
-    m_SoundPath[static_cast<int>(HighSound)] = "Audio/Sounds/high.wav";
-    m_SoundPath[static_cast<int>(MediumSound)] = "Audio/Sounds/medium.wav";
-    m_SoundPath[static_cast<int>(LowSound)] = "Audio/Sounds/low.wav";
-           
-    m_MusicPath[static_cast<int>(DefaultMusic)] = "Audio/Music/beat.wav";   
-    m_MusicPath[static_cast<int>(HolyF)] = "Audio/Music/HolyFuck.mp3";  
-    m_MusicPath[static_cast<int>(Pandemonium)] = "Audio/Music/Pandemonium.mp3";
-    m_MusicPath[static_cast<int>(GimmeLove)] = "Audio/Music/GimmeLove.mp3";
-    m_MusicPath[static_cast<int>(AreYouGonnaBeMyGirl)] = "Audio/Music/AreYouGonnaBeMyGirl.mp3";
-    m_MusicPath[static_cast<int>(WezPigulke)] = "Audio/Music/WezPigulke.mp3";
-    m_MusicPath[static_cast<int>(Gold)] = "Audio/Music/Gold.mp3";
-    m_MusicPath[static_cast<int>(ThatsWhatILike)] = "Audio/Music/ThatsWhatILike.mp3";
-    m_MusicPath[static_cast<int>(ImComing)] = "Audio/Music/ImComing.mp3";
-    m_MusicPath[static_cast<int>(Hold)] = "Audio/Music/Hold.mp3";
-    m_MusicPath[static_cast<int>(BeautifulMadness)] = "Audio/Music/BeautifulMadness.mp3";
-    m_MusicPath[static_cast<int>(ALittleMessedUp)] = "Audio/Music/ALittleMessedUp.mp3";
+    // This needs to be better. Too much repetition 
+    // No need to static_cast. C-style enum to int is safe)
+
+    m_SoundPath[int(ScratchSound)] = "Audio/Sounds/scratch.wav";
+    m_SoundPath[int(HighSound)] = "Audio/Sounds/high.wav";
+    m_SoundPath[int(MediumSound)] = "Audio/Sounds/medium.wav";
+    m_SoundPath[int(LowSound)] = "Audio/Sounds/low.wav";
+                
+    m_MusicPath[int(DefaultMusic)] = "Audio/Music/beat.wav";   
+    m_MusicPath[int(HolyF)] = "Audio/Music/HolyFuck.mp3";  
+    m_MusicPath[int(Pandemonium)] = "Audio/Music/Pandemonium.mp3";
+    m_MusicPath[int(GimmeLove)] = "Audio/Music/GimmeLove.mp3";
+    m_MusicPath[int(AreYouGonnaBeMyGirl)] = "Audio/Music/AreYouGonnaBeMyGirl.mp3";
+    m_MusicPath[int(WezPigulke)] = "Audio/Music/WezPigulke.mp3";
+    m_MusicPath[int(Gold)] = "Audio/Music/Gold.mp3";
+    m_MusicPath[int(ThatsWhatILike)] = "Audio/Music/ThatsWhatILike.mp3";
+    m_MusicPath[int(ImComing)] = "Audio/Music/ImComing.mp3";
+    m_MusicPath[int(Hold)] = "Audio/Music/Hold.mp3";
+    m_MusicPath[int(BeautifulMadness)] = "Audio/Music/BeautifulMadness.mp3";
+    m_MusicPath[int(ALittleMessedUp)] = "Audio/Music/ALittleMessedUp.mp3";
 
 };
 

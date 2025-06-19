@@ -1,0 +1,30 @@
+#pragma once // NOLINT
+#include <SDL.h>
+
+#include "Debug.h"
+#include <string>
+#include <sstream>
+//#include <format>
+
+class TimeHandler
+{
+public:
+    TimeHandler();
+    ~TimeHandler();
+
+
+    void startTime();
+
+    // Add day functionality xD????
+    const Uint64 getTimePassedInMs();
+    const Uint64 getTimePassedInSec();
+    const Uint64 getTimePassedInMin();
+    const Uint64 getTimePassedInHr(); 
+
+    const std::string getTimePassedFull();
+
+private:
+    
+    Uint64 m_TimePassed; //Not used for now???
+    std::string m_FullTimePassed;
+};

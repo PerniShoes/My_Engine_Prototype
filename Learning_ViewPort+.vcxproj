@@ -22,15 +22,15 @@
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main_file.cpp" />
-    <ClCompile Include="SDL_My_Texture.cpp" />
     <ClCompile Include="TextureHandler.cpp" />
+    <ClCompile Include="TimeHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="SDL_My_Texture.h" />
     <ClInclude Include="TextureHandler.h" />
+    <ClInclude Include="TimeHandler.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -2,7 +2,6 @@
 #include <crtdbg.h>
 #include "Game.h"
 
-
 Game GameInstance;		
 
 int main(int argc, char* args[])

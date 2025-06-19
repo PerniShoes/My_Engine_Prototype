@@ -42,27 +42,24 @@ enum class MusicList
 using enum MusicList;
 using enum SoundsList;
 
-
 class Audio
 {
 public:
-
-
 	Audio();
 	~Audio();
 
 	Audio(const Audio&) = delete;
 	Audio& operator = (const Audio&) = delete;
 
+	// ManualAdjustVolume(music/soundId Id, int volume);
+	// Add some "music player" functionality, Ui or just "next, previous, skip, etc"
 
 	bool LoadAudio();
 	void PlaySound(SoundsList soundId, int loopAmount = 0, int channel = -1)const;
 	void PlayMusic(MusicList musicId, int loopAmount = 10);
 
-
 	struct VolumeList
 	{
-
 		const int DefaultMusic = 16;
 		const int HolyF = 48;
 		const int Pandemonium = 16;
