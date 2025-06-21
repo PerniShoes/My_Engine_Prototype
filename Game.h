@@ -15,6 +15,7 @@
 #include "TextureHandler.h"
 #include "TimeHandler.h"
 #include "Player.h"
+#include "MouseHandler.h"
 
 class Game
 {
@@ -38,8 +39,10 @@ class Game
 
 		Audio m_Audio;	
 		TextureHandler m_Textures;
+		MouseHandler m_Mouse;
 		TimeHandler m_Time;
 		Player m_Player;
+		
 
 		void Events();
 		void Logic();

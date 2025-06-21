@@ -233,65 +233,21 @@ void Game::HandleKeyEvents()
 
 void Game::HandleMouseEvents()
 {
-	if (m_E.type == SDL_MOUSEMOTION || m_E.type == SDL_MOUSEBUTTONDOWN || m_E.type == SDL_MOUSEBUTTONUP)
-	{
+	m_Mouse.handleEvents(m_E);
 
-		SDL_GetMouseState(&m_MousePosX, &m_MousePosY);
-		m_MouseInside = true;
-
-	//	if (m_MousePosX < 0)
-	//	{
-	//		m_MouseInside = false;
-	//	}
-	//	else if (m_MousePosY < 0)
-	//	{
-	//		m_MouseInside = false;
-	//	}
-	//	else if (m_MousePosY > 0 + m_BackgroundTexture.getHeight())
-	//	{
-	//		m_MouseInside = false;
-	//	}
-	//	else if (m_MousePosX > 0 + m_BackgroundTexture.getWidth())
-	//	{
-	//		m_MouseInside = false;
-	//	}
-
-	//	if (!m_MouseInside)
-	//	{
-	//		m_BackgroundCheck = MOUSE_OUT;
-	//	}
-	//	else
-	//	{
-	//		switch (m_E.type)
-	//		{
-	//		case SDL_MOUSEMOTION:
-	//			m_BackgroundCheck = MOUSE_OVER_MOTION;
-	//			break;
-	//		case SDL_MOUSEBUTTONDOWN:
-	//			m_BackgroundCheck = MOUSE_DOWN;
-	//			break;
-	//		case SDL_MOUSEBUTTONUP:
-	//			m_BackgroundCheck = MOUSE_UP;
-	//			break;
-
-	//		}
-
-	//	}
-	//}
-	//if (m_MouseInside == true)
-	//{
-	//	m_BackgroundTexture.setColor((m_BackgroundTextureProp.color));
-	//}
-	//else
-	//{
-	//	SDL_Color darker = SDL_Color{ 125,125,125 };	
-	//	m_BackgroundTexture.setColor(darker);	
-	}
 
 };
 
 void Game::Logic()
 {
+	m_Mouse.updateState();
+
+	if (m_Mouse.getLBState() == Held)
+	{
+		// DO CRAZY SHIT
+	}
+
+
 
 	switch (m_BackgroundCheck)
 	{
@@ -344,23 +300,25 @@ void Game::Rendering()
 	m_Textures.setCurrentClip(BackgroundAlien, whichFrame);
 	m_Textures.render(BackgroundAlien);*/
 
-	m_Textures.setScale(PongPlayer,5.0f);
+	m_Textures.setScale(PongPlayer,1.0f);
 	m_Textures.setPos(PongPlayer, m_Player.getPosition());
 	m_Textures.render(PongPlayer);
-	Debug::Print("X: ", m_Player.getPosition().x, "\n", "Y: ",m_Player.getPosition().y, "\n");
+	//Debug::Print("X: ", m_Player.getPosition().x, "\n", "Y: ",m_Player.getPosition().y, "\n");
 
 
-	m_Textures.setPos(PongBall, { 200, 200 });
+	m_Textures.setPos(PongBall, { 200, 200 }); 
 	m_Textures.render(PongBall);
 
+	m_Textures.setPos(FireProjectiles, { 400,400 });
+	m_Textures.setScale(FireProjectiles, 1.0f);
+	m_Textures.setCurrentClip(FireProjectiles, 2);
+	m_Textures.render(FireProjectiles);
 
 	m_Textures.changeText(TimeText,  m_Time.getTimePassedFull()); 
 	m_Textures.setPos(TimeText, SDL_Point{
 		(Window::GetWindowSize().x/2-100),
 		50});
 	m_Textures.render(TimeText);
-
-
 
 
 	SDL_SetRenderDrawColor(Renderer::GetRenderer(), black.r, black.g, black.b, black.a);

@@ -23,23 +23,34 @@
 
 enum class TextureList
 {
-	Background = 0,
-	Foo = 1,
-	MainText = 2,
-	FuckEverything = 3,
-	Hero = 4,
-	FireProjectiles = 5,
-	TimeText = 6,
-	BlueEffects = 7,
-	LumberJackMove = 8,
-	Tiles = 9,
-	BackgroundAlien = 10,
-	PongBall = 11,
-	PongPlayer = 12,
+	// With hitbox:
 
-	TotalTextures = 13
+	FireProjectiles = 0,
+	TimeText = 1,
+	PongBall = 2,
+	PongPlayer = 3,
+	
+	// Without hitbox:
+
+	MainText = 4,
+	BlueEffects = 5,
+	BackgroundAlien = 6,
+
+	TotalTextures = 7
 	
 };
+
+enum class TexturesWithHitBox
+{
+	HB_FireProjectiles = 0,
+	HB_TimeText = 1,
+	HB_PongBall = 2,
+	HB_PongPlayer = 3,
+	  
+	HB_TotalTextures = 4
+
+};
+using enum TexturesWithHitBox;
 
 using enum TextureList;
 
