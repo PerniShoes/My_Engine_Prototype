@@ -37,7 +37,7 @@ const Uint64 TimeHandler::getTimePassedInMin()
 
 const Uint64 TimeHandler::getTimePassedInHr()
 {
-    return SDL_GetTicks64() / 600000;
+    return SDL_GetTicks64() / 3600000;
 }
 
 const std::string TimeHandler::getTimePassedFull()

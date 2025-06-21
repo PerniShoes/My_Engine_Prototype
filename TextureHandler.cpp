@@ -16,26 +16,17 @@ void TextureHandler::setAllPaths()
 	// Obviously not good code, too much repetition, change later:
 
 	// Images
-	setPath(Background, "Images/background.png");
-	setPath(Foo, "Images/foo_animated.png");
-	setPath(FuckEverything, "Images/fuck_everything.png");
-	setPath(Hero, "Images/Hero.bmp");
+
 
 	setPath(PongPlayer, "Images/PongPlayer.png");
 	setPath(PongBall, "Images/PongBall.png");
 
 	// Sprite Sheets
-	setPath(LumberJackMove, "Images/LumberJackMove.png");
-	setClipProp(LumberJackMove, { 0,0, 140,140 });
-
 	setPath(FireProjectiles, "Images/500_Bullets/BulletsDrugie.png");
 	setClipProp(FireProjectiles, { 0,0,24,24 });
 
 	setPath(BlueEffects, "Images/VFX/BlueBulletsMINE.png");
 	setClipProp(BlueEffects, { 0,0,32,32 });
-
-	setPath(Tiles, "Images/Tiles.png");
-	setClipProp(Tiles, { 0, 0, 16, 48 });
 
 	setPath(BackgroundAlien, "Images/BackgroundSprite.jpg");
 	setClipProp(BackgroundAlien, { 0,0, 640, 640 });
@@ -81,8 +72,6 @@ bool TextureHandler::loadTextures()
 
 	setClipList(BlueEffects, 16, 8, 4);
 	setClipList(FireProjectiles, 15, 24, 8);
-	setClipList(LumberJackMove, 4, 6, 6);
-	setClipList(Tiles, 1, 24, 24);
 	setClipList(BackgroundAlien, 2, 3, 1);
 
 	return success;
@@ -310,12 +299,8 @@ void TextureHandler::animate(TextureList textureId, int spriteNumber, float spee
 	m_TextureProperties[textureIdInt].m_LastTick = static_cast<float>(m_Time.getTimePassedInMs());
 	
 	m_TextureProperties[textureIdInt].m_FrameCounter += (speed*elapsedTime);
-	if (textureIdInt == 8)
-	{
-		std::cout << m_TextureProperties[textureIdInt].m_FramesPerAnim << std::endl;
-	}
-	if (m_TextureProperties[textureIdInt].m_FrameCounter >= m_TextureProperties[textureIdInt].m_FramesPerAnim)
 
+	if (m_TextureProperties[textureIdInt].m_FrameCounter >= m_TextureProperties[textureIdInt].m_FramesPerAnim)
 	{
 		m_TextureProperties[textureIdInt].m_FrameCounter = 0.0f;
 	}
@@ -325,12 +310,23 @@ void TextureHandler::animate(TextureList textureId, int spriteNumber, float spee
 
 SDL_Rect TextureHandler::getRect(TextureList textureId)
 {
+	int textureIdInt = (int)textureId;
 	SDL_Rect tempRect{};
-	m_TextureProperties[(int)textureId].m_Rect;
-	tempRect.x = m_TextureProperties[(int)textureId].m_Rect.x;
-	tempRect.y = m_TextureProperties[(int)textureId].m_Rect.y;
-	tempRect.h = m_TextureProperties[(int)textureId].m_Rect.h * m_TextureProperties[(int)textureId].m_Scale;
-	tempRect.w = m_TextureProperties[(int)textureId].m_Rect.w * m_TextureProperties[(int)textureId].m_Scale;
+	if (m_TextureProperties[textureIdInt].m_CurrentClip == NULL)
+	{
+		tempRect.x = m_TextureProperties[textureIdInt].m_Rect.x;
+		tempRect.y = m_TextureProperties[textureIdInt].m_Rect.y;
+		tempRect.h = int(m_TextureProperties[textureIdInt].m_Rect.h * m_TextureProperties[textureIdInt].m_Scale);
+		tempRect.w = int(m_TextureProperties[textureIdInt].m_Rect.w * m_TextureProperties[textureIdInt].m_Scale);
+	}
+	else if (m_TextureProperties[textureIdInt].m_CurrentClip != NULL)
+	{
+		tempRect.x = m_TextureProperties[textureIdInt].m_Rect.x;
+		tempRect.y = m_TextureProperties[textureIdInt].m_Rect.y;
+		tempRect.h = int(m_TextureProperties[textureIdInt].m_CurrentClip->h * m_TextureProperties[textureIdInt].m_Scale);
+		tempRect.w = int(m_TextureProperties[textureIdInt].m_CurrentClip->w * m_TextureProperties[textureIdInt].m_Scale);
+	}
+
 
 	return tempRect;
 }

@@ -22,6 +22,7 @@
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main_file.cpp" />
+    <ClCompile Include="MouseHandler.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TextureHandler.cpp" />
     <ClCompile Include="TimeHandler.cpp" />
@@ -29,6 +30,7 @@
   <ItemGroup>
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="MouseHandler.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="TextureHandler.h" />
