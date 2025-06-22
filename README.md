@@ -7,7 +7,7 @@ Afterwards, I will be mainly working on improving the engine, then making a bigg
 ### Main goals: 
 - Learning C++ and SDL2.
 - Generic and simple to use, bug free engine with:
-- Audio, Textures, simple Physics  (After pong: Level editor, Sandbox-like capabilities)
+- Audio, Textures, simple Physics  (After pong: Proper Physics, Level editor, Sandbox-like capabilities)
 - Modular code
 #
 
