@@ -15,7 +15,7 @@ Afterwards, I will be mainly working on improving the engine, then making a bigg
 Done:
 - MouseHandler, Player classes added
  
-Working on Pong game right now:
+Pong game remake:
 - Make movement frame independent
 - Simple collision checks (all needed for cool Pong)
 - Music that adapts to game state
