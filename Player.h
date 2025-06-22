@@ -13,7 +13,7 @@
 class Player
 {
 public:
-    Player(int height, int width, int velocity);
+    Player(int height, int width, float velocity);
     ~Player();
 
 
@@ -22,19 +22,17 @@ public:
     void setSize(int height, int width);
 
     SDL_Point getPosition() const;
-    void setVelocity(int velocity);
+    void setVelocity(float velocity);
 
 private:
 
-
     SDL_Point m_Position;
-    int m_Velocity;
     int m_Height;
     int m_Width;
 
-    int m_VelocityY;
-    int m_VelocityX;
-
+    float m_Velocity;
+    float m_VelocityY;
+    float m_VelocityX;
 
 
 };
