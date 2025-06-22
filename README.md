@@ -1,6 +1,6 @@
 # My-engine-prototype
 Working on a game engine, while learning SDL2. 
-Afterwards, I will be mainly working on improving the engine, then making a bigger game.
+After finishing Pong remake, I will be mainly working on improving the engine, then making a bigger game.
 (hopefuly finding a C++ job in the meantime :D)
 
 ### Main goals: 
