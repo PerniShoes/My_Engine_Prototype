@@ -14,6 +14,7 @@ Afterwards, I will be mainly working on improving the engine, then making a bigg
 ### Current task list:
 Done:
 - MouseHandler, Player classes added
+ 
 Working on Pong game right now:
 - Make movement frame independent
 - Simple collision checks (all needed for cool Pong)
