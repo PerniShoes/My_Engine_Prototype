@@ -1,6 +1,6 @@
 # My-engine-prototype
 Working on a game engine, while learning SDL2. My first bigger project. 
-Right now I am working on Pong game remake inside my engine.
+Right now I am working on a Pong game remake inside my engine.
 Afterwards, I will be mainly working on improving the engine, then making a bigger game.
 (hopefuly finding a C++ job in the meantime :D)
 
