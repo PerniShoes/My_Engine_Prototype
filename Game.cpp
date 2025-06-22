@@ -116,6 +116,8 @@ void Game::GameLoop()
 
 void Game::Events()
 {
+	m_Player.handleEvent(m_E);
+
 	HandleMouseEvents();
 	HandleKeyEvents();
 
@@ -234,20 +236,28 @@ void Game::HandleKeyEvents()
 void Game::HandleMouseEvents()
 {
 	m_Mouse.handleEvents(m_E);
-
-
+	
 };
 
 void Game::Logic()
 {
 	m_Mouse.updateState();
 
-	if (m_Mouse.getLBState() == Held)
-	{
-		// DO CRAZY SHIT
-	}
+	//for (int index{ 0 }; index < (int)HB_TotalTextures; index++)
+	//{
+	//	if (m_Mouse.isMouseInside(m_Textures.getRect(static_cast<TextureList>(index))))
+	//	{
+	//		std::cout << "Mouse inside texture (Id): " << index << std::endl;
+	//	}
+	//}
 
 
+	/*std::cout << "Right: "<< (int)m_Mouse.getButtonState(RightButton) << std::endl;
+
+	std::cout << "Left: "<< (int)m_Mouse.getButtonState(LeftButton) << std::endl;
+
+	std::cout << "Middle: " << (int)m_Mouse.getButtonState(MiddleButton) << std::endl;
+*/
 
 	switch (m_BackgroundCheck)
 	{
@@ -268,8 +278,13 @@ void Game::Logic()
 		break;
 	}
 
+
+	m_Textures.setScale(PongPlayer, 2.0f);
+	m_Player.setVelocity(3.0f);
 	m_Player.setSize(m_Textures.getRect(PongPlayer).h, m_Textures.getRect(PongPlayer).w);
+
 	m_Player.move();
+	m_Textures.setPos(PongPlayer, m_Player.getPosition());
 
 	/*
 
@@ -300,10 +315,12 @@ void Game::Rendering()
 	m_Textures.setCurrentClip(BackgroundAlien, whichFrame);
 	m_Textures.render(BackgroundAlien);*/
 
-	m_Textures.setScale(PongPlayer,1.0f);
-	m_Textures.setPos(PongPlayer, m_Player.getPosition());
+
+	
 	m_Textures.render(PongPlayer);
 	//Debug::Print("X: ", m_Player.getPosition().x, "\n", "Y: ",m_Player.getPosition().y, "\n");
+
+
 
 
 	m_Textures.setPos(PongBall, { 200, 200 }); 

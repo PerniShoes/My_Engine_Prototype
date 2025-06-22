@@ -1,8 +1,8 @@
 #include "Player.h"
 
 
-Player::Player(int height, int width, int velocity)
-    :m_Position{ 0,0 }, m_Velocity{ velocity }, m_Height{ height }, m_Width{ width }, m_VelocityY{ 0 }, m_VelocityX{ 0 }
+Player::Player(int height, int width, float velocity)
+    :m_Position{ 0,0 }, m_Height{ height }, m_Width{ width }, m_Velocity{ velocity }, m_VelocityY{ 0 }, m_VelocityX{ 0 }
 {
 
 
@@ -20,18 +20,17 @@ SDL_Point Player::getPosition() const
 
 void Player::move()
 {
-    m_Position.x += m_VelocityX;
+    m_Position.x += (int)m_VelocityX;
     if (m_Position.x < 0 || (m_Position.x + m_Width) > Window::GetWindowSize().x)
     {
-        m_Position.x -= m_VelocityX;
+        m_Position.x -= (int)m_VelocityX;
     }
 
-    m_Position.y += m_VelocityY;
+    m_Position.y += (int)m_VelocityY;
     if (m_Position.y < 0 || (m_Position.y + m_Height) > Window::GetWindowSize().y)
     {
-        m_Position.y -= m_VelocityY;
+        m_Position.y -= (int)m_VelocityY;
     }
-
 
 }
 
@@ -68,7 +67,7 @@ void Player::handleEvent(SDL_Event& e)
 
 }
 
-void Player::setVelocity(int velocity)
+void Player::setVelocity(float velocity)
 {
     m_Velocity = velocity;
 }

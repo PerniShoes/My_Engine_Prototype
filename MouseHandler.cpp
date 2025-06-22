@@ -1,8 +1,7 @@
 #include "MouseHandler.h"
 
 MouseHandler::MouseHandler()
-	:m_PosX{ 0 }, m_PosY{ 0 }, m_Last_Left{ Last_Released }, m_Last_Right{ Last_Released }, m_Last_Middle{ Last_Released },
-	m_LastTick{ 0 }, m_HoldDelay{ 0.15f }
+	:m_MousePos{ 0,0 }, m_Buttons{ Released,Released,Released }, m_HoldTimer{ 0.0f,0.0f,0.0f }, m_HoldDelay{ 0.15f }, m_LastTick{ 0 }
 {
 	
 
@@ -21,85 +20,51 @@ void MouseHandler::updateState()
 	updateHoldTimers();
 }
 
-void MouseHandler::updateMousePos()
-{
-	SDL_GetMouseState(&m_PosX, &m_PosY);
-}
 void MouseHandler::updateHoldTimers()
 {
-	float elapsedTime{ 0.0f };
-
+	float elapsedTime = 0.0f;
 	elapsedTime = ((m_Time.getTimePassedInMs() - m_LastTick) / 1000.0f);
 	m_LastTick = (float)m_Time.getTimePassedInMs();
 
-
-	if (m_Last_Left == Last_Pressed || m_Last_Left == Last_Held)
+	for (int index{ 0 }; index < (int)TotalButtons; index++)
 	{
-		HoldTimer.Left += elapsedTime;
+		switch (m_Buttons[index])
+		{
+		case Pressed: [[fallthrough]];
+		case Held: m_HoldTimer[index] += elapsedTime;
+			if (m_HoldTimer[index] >= m_HoldDelay)
+			{
+				m_Buttons[index] = Held;
+			}
+			break;
+		default: m_HoldTimer[index] = 0.0f;
+			break;
+		}
 	}
-	else
-	{
-		HoldTimer.Left = 0.0f;
-	}
+}
 
-
-
-	if (HoldTimer.Left >= m_HoldDelay)
-	{
-		m_Last_Left = Last_Held;
-	}
-
-	if (m_Last_Right == Last_Pressed || m_Last_Right == Last_Held)
-	{
-		HoldTimer.Right += elapsedTime;
-	}
-	else
-	{
-		HoldTimer.Right = 0.0f;
-	}
-
-	if (HoldTimer.Right >= m_HoldDelay)
-	{
-		m_Last_Right = Last_Held;
-	}
-
-
-
-	if (m_Last_Middle == Last_Pressed || m_Last_Middle == Last_Held)
-	{
-		HoldTimer.Middle += elapsedTime;
-	}
-	else
-	{
-		HoldTimer.Middle = 0.0f;
-	}
-
-	if (HoldTimer.Middle >= m_HoldDelay)
-	{
-		m_Last_Middle = Last_Held;
-	}
-
-
-
+void MouseHandler::updateMousePos()
+{
+	SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
 }
 
 bool MouseHandler::isMouseInside(SDL_Rect targetRect) const
 {
 	bool mouseInside = true;
 
-	if (m_PosX < targetRect.x)
+	if (m_MousePos.x < targetRect.x)
 	{
 		mouseInside = false;
 	}
-	else if (m_PosX > targetRect.x + targetRect.w)
+	else if (m_MousePos.x > targetRect.x + targetRect.w)
 	{
 		mouseInside = false;
 	}
-	else if (m_PosY < targetRect.y)
+	else if (m_MousePos.y < targetRect.y)
 	{
 		mouseInside = false;
 	}
-	else if (m_PosY > targetRect.y + targetRect.h)
+	else if (m_MousePos.y > targetRect.y + targetRect.h)
 	{
 		mouseInside = false;
 	}
@@ -109,85 +74,39 @@ bool MouseHandler::isMouseInside(SDL_Rect targetRect) const
 
 void MouseHandler::handleEvents(SDL_Event& e)
 {
-	leftButton(e);
-	rightButton(e);
-	middleButton(e);
-}
 
-MouseState MouseHandler::getLBState()
-{
-	switch (m_Last_Left)
+	if (e.type == SDL_MOUSEBUTTONUP)
 	{
-	case Last_Released: return Released; break;
-	case Last_Pressed: return Pressed; break;
-	case Last_Held: return Held; break;
-	default: return Released;
-	}
-}
-MouseState MouseHandler::getRBState()
-{
-	switch (m_Last_Right)
-	{
-	case Last_Released: return Released; break;
-	case Last_Pressed: return Pressed; break;
-	case Last_Held: return Held; break;
-	default: return Released;
-	}
-}
-MouseState MouseHandler::getMBState()
-{
-	switch (m_Last_Middle)
-	{
-	case Last_Released: return Released; break;
-	case Last_Pressed: return Pressed; break;
-	case Last_Held: return Held; break;
-	default: return Released;
-	}
-}
-
-void MouseHandler::leftButton(SDL_Event& e)
-{
-	if (e.button.button == SDL_BUTTON_LEFT)
-	{
-		if (e.type == SDL_MOUSEBUTTONUP)
+		switch (e.button.button)
 		{
-			m_Last_Left = Last_Released;
+		case SDL_BUTTON_LEFT: m_Buttons[(int)LeftButton] = Released; break;
+		case SDL_BUTTON_RIGHT: m_Buttons[(int)RightButton] = Released; break;
+		case SDL_BUTTON_MIDDLE: m_Buttons[(int)MiddleButton] = Released; break;
 		}
-		else if (e.type == SDL_MOUSEBUTTONDOWN)
+	}
+	else if (e.type == SDL_MOUSEBUTTONDOWN)
+	{
+		switch (e.button.button)
 		{
-			m_Last_Left = Last_Pressed; 
+		case SDL_BUTTON_LEFT: m_Buttons[(int)LeftButton] = Pressed; break;
+		case SDL_BUTTON_RIGHT: m_Buttons[(int)RightButton] = Pressed; break;
+		case SDL_BUTTON_MIDDLE: m_Buttons[(int)MiddleButton] = Pressed; break;
 		}
 	}
 }
-void MouseHandler::rightButton(SDL_Event& e)
-{
-	if (e.button.button == SDL_BUTTON_RIGHT)
-	{
-		if (e.type == SDL_MOUSEBUTTONUP)
-		{
-			m_Last_Right = Last_Released;
-		}
-		else if (e.type == SDL_MOUSEBUTTONDOWN)
-		{
-			m_Last_Right = Last_Pressed;
-		}
-	}
 
-}
-void MouseHandler::middleButton(SDL_Event& e)
+ButtonState MouseHandler::getButtonState(ButtonList button) const
 {
-	if (e.button.button == SDL_BUTTON_MIDDLE)
+	switch(button)
 	{
-		if (e.type == SDL_MOUSEBUTTONUP)
-		{
-			m_Last_Middle = Last_Released;
-		}
-		else if (e.type == SDL_MOUSEBUTTONDOWN)
-		{
-			m_Last_Middle = Last_Pressed;
-		}
+	case LeftButton: return m_Buttons[(int)LeftButton]; break;
+	case RightButton: return m_Buttons[(int)RightButton]; break;
+	case MiddleButton: return m_Buttons[(int)MiddleButton]; break;
+	default: return TotalButtonStates;
 	}
-
 }
 
-
+SDL_Point MouseHandler::getMousePos() const
+{
+	return m_MousePos;
+}
