@@ -2,7 +2,10 @@
 
 Game::Game()
 	: m_Quit{ false }, m_E{ 0 }, m_BackgroundCheck{ MOUSE_OUT },
-	m_MousePosX{ 0 }, m_MousePosY{ 0 }, m_MouseInside{ false }, m_Speed{ 0 }, m_PosChangeTemp{ 0 }, m_Player{ 0,0,5 }
+	m_MousePosX{ 0 }, m_MousePosY{ 0 }, m_MouseInside{ false }, m_Speed{ 0 }, m_PosChangeTemp{ 0 }, m_Ball{ SDL_Point{900,100+ m_BorderGirth} },
+	m_BorderGirth{ 350 }, m_Player{ int(Window::GetWindowSize().x * 0.05),
+	0 + m_BorderGirth,
+	5}
 {
 
 	
@@ -259,32 +262,50 @@ void Game::Logic()
 	std::cout << "Middle: " << (int)m_Mouse.getButtonState(MiddleButton) << std::endl;
 */
 
-	switch (m_BackgroundCheck)
-	{
-	case MOUSE_DOWN:
-		Debug::Print("Mouse clicked on m_BackgroundTexture!\n");
-		m_BackgroundCheck = MOUSE_OUT;
-		break;
-	case MOUSE_UP:
-		Debug::Print("Mouse released on m_BackgroundTexture!\n");
-		m_BackgroundCheck = MOUSE_OUT;
-		break;
-	case MOUSE_OVER_MOTION:
-		Debug::Print("Mouse is hovering over m_BackgroundTexture!\n");
-		m_BackgroundCheck = MOUSE_OUT;
-		break;
-	default:
-		m_BackgroundCheck = MOUSE_OUT;
-		break;
-	}
+	//switch (m_BackgroundCheck)
+	//{
+	//case MOUSE_DOWN:
+	//	Debug::Print("Mouse clicked on m_BackgroundTexture!\n");
+	//	m_BackgroundCheck = MOUSE_OUT;
+	//	break;
+	//case MOUSE_UP:
+	//	Debug::Print("Mouse released on m_BackgroundTexture!\n");
+	//	m_BackgroundCheck = MOUSE_OUT;
+	//	break;
+	//case MOUSE_OVER_MOTION:
+	//	Debug::Print("Mouse is hovering over m_BackgroundTexture!\n");
+	//	m_BackgroundCheck = MOUSE_OUT;
+	//	break;
+	//default:
+	//	m_BackgroundCheck = MOUSE_OUT;
+	//	break;
+	//}
+	
+	m_BoardBorderBottom = { 0,Window::GetWindowSize().y - m_BorderGirth,Window::GetWindowSize().x,Window::GetWindowSize().y };
+	m_BoardBorderTop = { 0,0,Window::GetWindowSize().x,m_BorderGirth };
+	m_BoardBorderRightTest = {Window::GetWindowSize().x - m_BorderGirth,0, Window::GetWindowSize().x,Window::GetWindowSize().y};
+
+	m_Textures.setScale(PongPlayer, 1.0f);
+	m_Player.setVelocity(5.0f);
+	m_Player.setSize(m_Textures.getRect(PongPlayer)->h, m_Textures.getRect(PongPlayer)->w);
 
 
-	m_Textures.setScale(PongPlayer, 2.0f);
-	m_Player.setVelocity(3.0f);
-	m_Player.setSize(m_Textures.getRect(PongPlayer).h, m_Textures.getRect(PongPlayer).w);
 
-	m_Player.move();
+	m_Player.move(m_BorderGirth);
 	m_Textures.setPos(PongPlayer, m_Player.getPosition());
+
+
+
+	m_Ball.setVelocity(15.0f);
+	m_Ball.move(Sides::Bottom, Sides::Right);
+	m_Ball.handleCollision(&m_BoardBorderRightTest);
+	m_Ball.handleCollision(&m_BoardBorderBottom);
+	m_Ball.handleCollision(&m_BoardBorderTop);
+	m_Ball.handleCollision(m_Textures.getRect(PongPlayer));
+	m_Ball.setSize(m_Textures.getRect(PongBall)->h, m_Textures.getRect(PongBall)->w);
+	m_Ball.setCollisionLines();
+
+	m_Textures.setPos(PongBall, m_Ball.getPosition());
 
 	/*
 
@@ -305,36 +326,59 @@ void Game::Logic()
 void Game::Rendering()
 {
 	SDL_Color black{ 0, 0, 0, 255 };
-	//SDL_Color white{ 255, 255, 255, 255 }; // Later have it separate so you don't need to change "white" bellow 4x times to change the color
+	SDL_Color white{ 255, 255, 255, 255 }; // Later have it separate so you don't need to change "white" bellow 4x times to change the color
 
 	SDL_SetRenderDrawColor(Renderer::GetRenderer(), black.r, black.g, black.b, black.a);
 	SDL_RenderClear(Renderer::GetRenderer());
 
-	/*m_Textures.setScale(BackgroundAlien, 2.0f);
-	m_Textures.setPos(BackgroundAlien, { 0, -150 });
-	m_Textures.setCurrentClip(BackgroundAlien, whichFrame);
-	m_Textures.render(BackgroundAlien);*/
+	// Pack things into functions to clean this mess up:
+
+	m_Textures.render(BackGroundSpace, true);
+
+	SDL_Rect fullScreen{ 0,0, Window::GetWindowSize().x,Window::GetWindowSize().y };
+
+	SDL_SetRenderDrawBlendMode(Renderer::GetRenderer(), SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), black.r, black.g, black.b, 200);
+	SDL_RenderFillRect(Renderer::GetRenderer(), &fullScreen);
+
+	// Board borders
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_RenderFillRect(Renderer::GetRenderer(), &m_BoardBorderBottom);
+	SDL_RenderFillRect(Renderer::GetRenderer(), &m_BoardBorderTop);
+	SDL_RenderFillRect(Renderer::GetRenderer(), &m_BoardBorderRightTest);
+
+	// Middle line 
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	int middleLineSquareSize{ 7 };
+	SDL_Rect middleScreenLine{ int(Window::GetWindowSize().x / 2),0, middleLineSquareSize,middleLineSquareSize };
+	int indexMax {Window::GetWindowSize().y / middleLineSquareSize * 2};
+	for (int i{ 0 }; i < indexMax; i++)
+	{
+		middleScreenLine.y = 0 + (middleLineSquareSize*2 * i);
+		SDL_RenderFillRect(Renderer::GetRenderer(), &middleScreenLine);
+	}
+	//
 
 
-	
+
+
+	// Foreground:
+
+
+	m_Ball.drawCollisionLines();
+	m_Textures.render(PongBall);
+
+
+
+
 	m_Textures.render(PongPlayer);
 	//Debug::Print("X: ", m_Player.getPosition().x, "\n", "Y: ",m_Player.getPosition().y, "\n");
 
 
-
-
-	m_Textures.setPos(PongBall, { 200, 200 }); 
-	m_Textures.render(PongBall);
-
-	m_Textures.setPos(FireProjectiles, { 400,400 });
-	m_Textures.setScale(FireProjectiles, 1.0f);
-	m_Textures.setCurrentClip(FireProjectiles, 2);
-	m_Textures.render(FireProjectiles);
-
 	m_Textures.changeText(TimeText,  m_Time.getTimePassedFull()); 
 	m_Textures.setPos(TimeText, SDL_Point{
-		(Window::GetWindowSize().x/2-100),
-		50});
+		(Window::GetWindowSize().x-250 - m_BorderGirth),
+		20 + m_BorderGirth });
 	m_Textures.render(TimeText);
 
 

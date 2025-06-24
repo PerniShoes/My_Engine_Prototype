@@ -35,8 +35,9 @@ enum class TextureList
 	MainText = 4,
 	BlueEffects = 5,
 	BackgroundAlien = 6,
+	BackGroundSpace = 7,
 
-	TotalTextures = 7
+	TotalTextures = 8
 	
 };
 
@@ -66,7 +67,7 @@ public:
 
 	bool loadTextures();
 
-	void render(TextureList textureId) const;
+	void render(TextureList textureId, bool stretch = false) const;
 	void setPos(TextureList textureId, SDL_Point currentPos = SDL_Point{ 0,0 }, SDL_Point change = SDL_Point{ 0,0 });
 	void transform(TextureList textureId, 
 		float scale = 1.0f, SDL_RendererFlip flipType = SDL_FLIP_NONE, 
@@ -88,7 +89,7 @@ public:
 	void animate(TextureList textureId, int spriteNumber, float speed = 12.0f);
 	void changeText(TextureList textureId, std::string text); // Can add Color and Font changeability	
 	void setCurrentClip(TextureList textureId, int frameNumber);
-	SDL_Rect getRect(TextureList textureId);
+	SDL_Rect* getRect(TextureList textureId);
 
 private:
 
@@ -152,6 +153,6 @@ private:
 
 	TimeHandler m_Time;
 	
-
+	SDL_Rect m_PlaceHolderRect;
 };
 

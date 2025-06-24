@@ -1,8 +1,8 @@
 #include "Player.h"
 
 
-Player::Player(int height, int width, float velocity)
-    :m_Position{ 0,0 }, m_Height{ height }, m_Width{ width }, m_Velocity{ velocity }, m_VelocityY{ 0 }, m_VelocityX{ 0 }
+Player::Player(int posX, int posY, float velocity)
+    :m_Position{ posX,posY }, m_Height{ 10 }, m_Width{ 10 }, m_Velocity{ velocity }, m_VelocityY{ 0 }, m_VelocityX{ 0 }
 {
 
 
@@ -18,8 +18,9 @@ SDL_Point Player::getPosition() const
     return m_Position;
 }
 
-void Player::move()
+void Player::move(int borderGirth)
 {
+
     m_Position.x += (int)m_VelocityX;
     if (m_Position.x < 0 || (m_Position.x + m_Width) > Window::GetWindowSize().x)
     {
@@ -27,7 +28,7 @@ void Player::move()
     }
 
     m_Position.y += (int)m_VelocityY;
-    if (m_Position.y < 0 || (m_Position.y + m_Height) > Window::GetWindowSize().y)
+    if (m_Position.y < 0 + borderGirth || (m_Position.y + m_Height) > Window::GetWindowSize().y - borderGirth)
     {
         m_Position.y -= (int)m_VelocityY;
     }
@@ -48,8 +49,8 @@ void Player::handleEvent(SDL_Event& e)
         {
         case SDLK_UP: m_VelocityY -= m_Velocity; break;
         case SDLK_DOWN: m_VelocityY += m_Velocity; break;
-        case SDLK_LEFT: m_VelocityX -= m_Velocity; break;
-        case SDLK_RIGHT: m_VelocityX += m_Velocity; break;
+        //case SDLK_LEFT: m_VelocityX -= m_Velocity; break;
+        //case SDLK_RIGHT: m_VelocityX += m_Velocity; break;
         }
     }
     
@@ -59,8 +60,8 @@ void Player::handleEvent(SDL_Event& e)
         {
         case SDLK_UP: m_VelocityY += m_Velocity; break;
         case SDLK_DOWN: m_VelocityY -= m_Velocity; break;
-        case SDLK_LEFT: m_VelocityX += m_Velocity; break;
-        case SDLK_RIGHT: m_VelocityX -= m_Velocity; break;
+        // case SDLK_LEFT: m_VelocityX += m_Velocity; break;
+        //case SDLK_RIGHT: m_VelocityX -= m_Velocity; break;
         }
 
     }

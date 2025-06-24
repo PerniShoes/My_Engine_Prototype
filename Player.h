@@ -13,12 +13,12 @@
 class Player
 {
 public:
-    Player(int height, int width, float velocity);
+    Player(int posX = 0, int posY = 0, float velocity = 5.0f);
     ~Player();
 
 
     void handleEvent(SDL_Event& e);
-    void move();
+    void move(int borderGirth);
     void setSize(int height, int width);
 
     SDL_Point getPosition() const;

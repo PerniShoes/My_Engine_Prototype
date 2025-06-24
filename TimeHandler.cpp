@@ -88,17 +88,17 @@ const std::string TimeHandler::getTimePassedFull()
     miliseconds = ":" + std::to_string((SDL_GetTicks64() % 1000) / 10);
 
 
-    if ((SDL_GetTicks64() / 600000) >= 1)
+    if ((SDL_GetTicks64() / 3600000) >= 1)
     {
         space = "";
     }
     else if ((SDL_GetTicks64() / 60000) >= 1)
     {
-        space = "  ";
+        space = "     ";
     }
     else
     {
-        space = "    ";
+        space = "          ";
     }
 
 
