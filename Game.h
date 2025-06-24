@@ -16,6 +16,8 @@
 #include "TimeHandler.h"
 #include "Player.h"
 #include "MouseHandler.h"
+#include "Ball.h"
+
 
 class Game
 {
@@ -37,11 +39,19 @@ class Game
 		
 	private:
 
+		// Board borders:
+		SDL_Rect m_BoardBorderTop;
+		SDL_Rect m_BoardBorderBottom;
+		SDL_Rect m_BoardBorderRightTest;
+		int m_BorderGirth{ 300 };
+
+
 		Audio m_Audio;	
 		TextureHandler m_Textures;
 		MouseHandler m_Mouse;
 		TimeHandler m_Time;
 		Player m_Player;
+		Ball m_Ball;
 		
 
 		void Events();
@@ -72,10 +82,13 @@ class Game
 		bool m_MouseInside;
 		//
 
+
 		// Temp:
 		int m_Speed; 
 		SDL_Point m_PosChangeTemp;
 		
+	
+
 		int whichFrame{ 0 };
 		//
 };

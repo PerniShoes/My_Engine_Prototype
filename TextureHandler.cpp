@@ -17,7 +17,8 @@ void TextureHandler::setAllPaths()
 
 	// Images
 
-
+	setPath(BackGroundSpace, "Images/BackgroundSpace.jpg");
+	
 	setPath(PongPlayer, "Images/PongPlayer.png");
 	setPath(PongBall, "Images/PongBall.png");
 
@@ -177,7 +178,7 @@ void TextureHandler::changeText(TextureList textureId, std::string text)
 }
 
 
-void TextureHandler::render(TextureList textureId) const
+void TextureHandler::render(TextureList textureId, bool stretch) const
 {
 	int textureIdInt = static_cast<int>(textureId);
 
@@ -192,17 +193,30 @@ void TextureHandler::render(TextureList textureId) const
 	{
 		renderQuad.w = int(m_TextureProperties[textureIdInt].m_CurrentClip->w * m_TextureProperties[textureIdInt].m_Scale);
 		renderQuad.h = int(m_TextureProperties[textureIdInt].m_CurrentClip->h * m_TextureProperties[textureIdInt].m_Scale);
-	}																						   
+	}			
 
-	
-	SDL_RenderCopyEx(
-		Renderer::GetRenderer(), m_Texture[textureIdInt],
-		m_TextureProperties[textureIdInt].m_CurrentClip,
-		&renderQuad,		
-		m_TextureProperties[textureIdInt].m_RotationDegrees,
-		m_TextureProperties[textureIdInt].m_RotationCenter,
-		m_TextureProperties[textureIdInt].m_FlipType);
-		
+	if (stretch)
+	{
+
+		SDL_RenderCopyEx(
+			Renderer::GetRenderer(), m_Texture[textureIdInt],
+			m_TextureProperties[textureIdInt].m_CurrentClip,
+			NULL,
+			m_TextureProperties[textureIdInt].m_RotationDegrees,
+			m_TextureProperties[textureIdInt].m_RotationCenter,
+			m_TextureProperties[textureIdInt].m_FlipType);
+	}
+	else
+	{
+
+		SDL_RenderCopyEx(
+			Renderer::GetRenderer(), m_Texture[textureIdInt],
+			m_TextureProperties[textureIdInt].m_CurrentClip,
+			&renderQuad,
+			m_TextureProperties[textureIdInt].m_RotationDegrees,
+			m_TextureProperties[textureIdInt].m_RotationCenter,
+			m_TextureProperties[textureIdInt].m_FlipType);
+	}
 }
 
 void TextureHandler::transform(TextureList textureId, float scale, SDL_RendererFlip flipType, double angle, SDL_Point* center)
@@ -308,25 +322,25 @@ void TextureHandler::animate(TextureList textureId, int spriteNumber, float spee
 }
 
 
-SDL_Rect TextureHandler::getRect(TextureList textureId)
+SDL_Rect* TextureHandler::getRect(TextureList textureId)
 {
 	int textureIdInt = (int)textureId;
-	SDL_Rect tempRect{};
+	
+	m_PlaceHolderRect = {};
 	if (m_TextureProperties[textureIdInt].m_CurrentClip == NULL)
 	{
-		tempRect.x = m_TextureProperties[textureIdInt].m_Rect.x;
-		tempRect.y = m_TextureProperties[textureIdInt].m_Rect.y;
-		tempRect.h = int(m_TextureProperties[textureIdInt].m_Rect.h * m_TextureProperties[textureIdInt].m_Scale);
-		tempRect.w = int(m_TextureProperties[textureIdInt].m_Rect.w * m_TextureProperties[textureIdInt].m_Scale);
+		m_PlaceHolderRect.x = m_TextureProperties[textureIdInt].m_Rect.x;
+		m_PlaceHolderRect.y = m_TextureProperties[textureIdInt].m_Rect.y;
+		m_PlaceHolderRect.h = int(m_TextureProperties[textureIdInt].m_Rect.h * m_TextureProperties[textureIdInt].m_Scale);
+		m_PlaceHolderRect.w = int(m_TextureProperties[textureIdInt].m_Rect.w * m_TextureProperties[textureIdInt].m_Scale);
 	}
 	else if (m_TextureProperties[textureIdInt].m_CurrentClip != NULL)
 	{
-		tempRect.x = m_TextureProperties[textureIdInt].m_Rect.x;
-		tempRect.y = m_TextureProperties[textureIdInt].m_Rect.y;
-		tempRect.h = int(m_TextureProperties[textureIdInt].m_CurrentClip->h * m_TextureProperties[textureIdInt].m_Scale);
-		tempRect.w = int(m_TextureProperties[textureIdInt].m_CurrentClip->w * m_TextureProperties[textureIdInt].m_Scale);
+		m_PlaceHolderRect.x = m_TextureProperties[textureIdInt].m_Rect.x;
+		m_PlaceHolderRect.y = m_TextureProperties[textureIdInt].m_Rect.y;
+		m_PlaceHolderRect.h = int(m_TextureProperties[textureIdInt].m_CurrentClip->h * m_TextureProperties[textureIdInt].m_Scale);
+		m_PlaceHolderRect.w = int(m_TextureProperties[textureIdInt].m_CurrentClip->w * m_TextureProperties[textureIdInt].m_Scale);
 	}
 
-
-	return tempRect;
+	return &m_PlaceHolderRect;
 }
