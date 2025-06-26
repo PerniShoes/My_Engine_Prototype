@@ -1,6 +1,7 @@
 #include "TextureHandler.h"
 
 TextureHandler::TextureHandler()
+	:m_PlaceHolderRect{}
 
 {
 
@@ -19,8 +20,13 @@ void TextureHandler::setAllPaths()
 
 	setPath(BackGroundSpace, "Images/BackgroundSpace.jpg");
 	
+	setPath(BackGroundBlackHole, "Images/BackgroundBlackhole.jpg");
+	setPath(BackgroundDazzlingForest, "Images/BackgroundDazzlingForest.jpg");
+
 	setPath(PongPlayer, "Images/PongPlayer.png");
 	setPath(PongBall, "Images/PongBall.png");
+	setPath(EnemyPong, "Images/EnemyPong.png");
+
 
 	// Sprite Sheets
 	setPath(FireProjectiles, "Images/500_Bullets/BulletsDrugie.png");
@@ -28,9 +34,6 @@ void TextureHandler::setAllPaths()
 
 	setPath(BlueEffects, "Images/VFX/BlueBulletsMINE.png");
 	setClipProp(BlueEffects, { 0,0,32,32 });
-
-	setPath(BackgroundAlien, "Images/BackgroundSprite.jpg");
-	setClipProp(BackgroundAlien, { 0,0, 640, 640 });
 
 	// Fonts
 	setPath(MainText, "Fonts/lazy.ttf");
@@ -41,6 +44,9 @@ void TextureHandler::setAllPaths()
 	initText(TimeText, "Place Holder", 48);
 	setFont(TimeText);
 
+	setPath(ScoreText, "Fonts/Digital Dismay.ttf");
+	initText(ScoreText, "Place Holder", 100);
+	setFont(ScoreText);
 
 }
 
@@ -73,7 +79,6 @@ bool TextureHandler::loadTextures()
 
 	setClipList(BlueEffects, 16, 8, 4);
 	setClipList(FireProjectiles, 15, 24, 8);
-	setClipList(BackgroundAlien, 2, 3, 1);
 
 	return success;
 };

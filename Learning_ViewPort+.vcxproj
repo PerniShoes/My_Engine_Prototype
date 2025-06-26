@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="EnemyAi.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main_file.cpp" />
     <ClCompile Include="MouseHandler.cpp" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="EnemyAi.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="MouseHandler.h" />
     <ClInclude Include="Player.h" />

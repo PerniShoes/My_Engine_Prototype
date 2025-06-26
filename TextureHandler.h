@@ -29,15 +29,18 @@ enum class TextureList
 	TimeText = 1,
 	PongBall = 2,
 	PongPlayer = 3,
+	EnemyPong = 4,
 	
 	// Without hitbox:
 
-	MainText = 4,
-	BlueEffects = 5,
-	BackgroundAlien = 6,
+	MainText = 5,
+	BlueEffects = 6,
 	BackGroundSpace = 7,
+	ScoreText = 8,
+	BackGroundBlackHole = 9,
+	BackgroundDazzlingForest = 10,
 
-	TotalTextures = 8
+	TotalTextures = 11
 	
 };
 
@@ -47,8 +50,9 @@ enum class TexturesWithHitBox
 	HB_TimeText = 1,
 	HB_PongBall = 2,
 	HB_PongPlayer = 3,
-	  
-	HB_TotalTextures = 4
+	HB_EnemyPong = 4,
+
+	HB_TotalTextures = 5
 
 };
 using enum TexturesWithHitBox;

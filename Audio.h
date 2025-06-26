@@ -8,12 +8,11 @@
 
 enum class SoundsList
 {
-	ScratchSound = 0,
-	HighSound = 1,
-	MediumSound = 2,
-	LowSound = 3,
+	PaddleSoundEffect = 0,
+	Score_sound = 1,
+	WallHitSoundEffect = 2,
 
-	TotalSounds = 4
+	TotalSounds = 3
 
 };
 
@@ -34,9 +33,12 @@ enum class MusicList
 	ThatsWhatILike = 9,
 	Gold = 10,
 	Hold = 11,
+	EisenfunkPong = 12,
+	HeliosLexica = 13,
+	PressPlayMusic = 14,
 
 
-	TotalMusic = 12
+	TotalMusic = 15
 };
 
 using enum MusicList;
@@ -72,6 +74,13 @@ public:
 		const int ThatsWhatILike = 48; 
 		const int Gold = 32;
 		const int Hold = 32;
+		const int EisenfunkPong = 16;
+		const int HeliosLexica = 16;
+		const int PressPlayMusic = 24;
+
+		const int PaddleSoundEffect = 128;
+		const int Score_sound = 128;
+		const int WallHitSoundEffect = 128;
 
 	}m_Volume;
 
