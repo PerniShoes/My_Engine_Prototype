@@ -4,9 +4,13 @@ using enum CollisionLinesId;
 
 Ball::Ball(SDL_Point startingPos, int width, int height, float velocity)
 	: m_BallRect{ startingPos.x, startingPos.y, startingPos.x + width, startingPos.y + height },
-	m_Velocity{ velocity }, m_VelocityY{ 0 }, m_VelocityX{ 0 }, m_LastHitVert{NoCollision}, m_LastHitHorizontal{NoCollision}
-{
+	m_StartingVelocity{velocity}, m_Velocity{velocity}, m_VelocityY{0}, m_VelocityX{0}, m_LastHitVert{NoCollision}, m_LastHitHorizontal{NoCollision},
+	m_CurrentHitHorizontal{ NoCollision }, m_CurrentHitVert{ NoCollision }, m_BounceCounter{ -2 /* Needs -1 to work */ }, 
+	m_VelocityMult{ 1.005f }, m_LastBounceCounter{ m_BounceCounter }, m_SpeedUp{ false }, m_VerticalVelocityRandomizer{ 1.0f }
 
+
+{
+	setPos({ Window::GetWindowSize().x / 2, Window::GetWindowSize().y / 2 });
 }
 
 Ball::~Ball()
@@ -15,39 +19,139 @@ Ball::~Ball()
 
 }
 
+void Ball::setVelocityMult(float mult)
+{
+	m_VelocityMult = mult;
+}
+
 void Ball::setVelocity(float velocity)
 {
 	m_Velocity = velocity;
+}
 
+void Ball::restartBall()
+{
+	m_AccumulatedTime = 0;
+	setPos({ Window::GetWindowSize().x / 2, Window::GetWindowSize().y / 2 });
+	m_Velocity = m_StartingVelocity;
+
+}
+
+float Ball::getVelocity() const
+{
+	return m_Velocity * m_VelocityMult;
+}
+
+BallSoundEvents Ball::handleSoundEvents()
+{
+	for (int i{ 0 }; i < (int)TotalBallSoundEvents; i++)
+	{
+		if (m_SoundEvents[i])
+		{
+			//Debug::Print(i, "\n");
+			m_SoundEvents[i] = false;
+			return (BallSoundEvents)i;
+		}
+
+	}
+	return NoSoundEvent;
 }
 
 void Ball::move(Sides startingColisionVert, Sides startingCollisionHorizontal)
 {
-	// For now will not work if ball is between stuff
+	// For now will not well work if ball is between stuff
 
-	m_VelocityX = m_Velocity;
-	m_VelocityY = m_Velocity;
+	// This does way too much various functionality
+	// For a first game project I will ignore it for now, so I can focus on something else, but this needs fixing
 
-	if (m_LastHitVert == NoCollision)
+	if (m_ChangeVerticalVelocity)
 	{
-		m_LastHitVert = startingColisionVert;
-	}
-	if (m_LastHitHorizontal == NoCollision)
-	{
-		m_LastHitHorizontal = startingCollisionHorizontal;
-	}
-	
-	switch (m_LastHitHorizontal)
-	{
-	case Left: m_BallRect.x += (int)m_VelocityX; break;
-	case Right: m_BallRect.x -= (int)m_VelocityX; break;
-	}
-	switch (m_LastHitVert)
-	{
-	case Top: m_BallRect.y += (int)m_VelocityX; break;
-	case Bottom: m_BallRect.y -= (int)m_VelocityX; break;
+		m_VerticalVelocityRandomizer = (rand() % 100 + 1) / 100.0f;
+		m_ChangeVerticalVelocity = false;
 	}
 
+	m_MoveDelay = (m_Time.getTimePassedInMs() / 1000.0f);
+
+	float elapsedTime = 0.0f;
+	elapsedTime = ((m_Time.getTimePassedInMs() - m_LastTick) / 1000.0f);
+	m_LastTick = (float)m_Time.getTimePassedInMs();
+
+
+	m_AccumulatedTime += elapsedTime;
+
+	// Crude lag safety:
+	if (elapsedTime >= 0.01f)
+	{
+		elapsedTime = 0.01f;
+	}
+
+	if (m_SpeedUp && m_BounceCounter > 1)
+	{
+		float tempIntMult{ 1.0f };
+		tempIntMult*=m_VelocityMult;
+
+		m_Velocity *= tempIntMult;
+		m_SpeedUp = false;
+	}
+
+	if (m_VelocityCap && m_Velocity > m_MaxVelocity)
+	{
+		m_Velocity = m_MaxVelocity;
+	}
+
+	if (m_MoveDelay > 1 && m_AccumulatedTime > 1)
+	{
+		m_VelocityX = (m_Velocity * elapsedTime);
+
+		m_VelocityY = (m_Velocity * m_VerticalVelocityRandomizer * elapsedTime);
+
+		if (m_LastHitVert == NoCollision)
+		{
+			m_LastHitVert = startingColisionVert;
+		}
+		if (m_LastHitHorizontal == NoCollision)
+		{
+			m_LastHitHorizontal = startingCollisionHorizontal;
+		}
+
+		switch (m_LastHitHorizontal)
+		{
+		case Left: m_BallRect.x += (int)m_VelocityX; break;
+		case Right: m_BallRect.x -= (int)m_VelocityX; break;
+		}
+		switch (m_LastHitVert)
+		{
+		case Top: m_BallRect.y += (int)m_VelocityY; break;
+		case Bottom: m_BallRect.y -= (int)m_VelocityY; break;
+		}
+
+		if (m_LastHitHorizontal != m_CurrentHitHorizontal)
+		{
+			m_BounceCounter += 1;
+			m_ChangeVerticalVelocity = true;
+			if (m_BounceCounter >= 0)
+			{
+				m_SoundEvents[(int)PaddleHit] = true;
+			}
+			}
+		if (m_LastHitVert != m_CurrentHitVert)
+		{
+			m_BounceCounter += 1;
+			if (m_BounceCounter >= 1)
+			{
+				m_SoundEvents[(int)WallHit] = true;
+			}
+		}
+
+		if (m_LastBounceCounter != m_BounceCounter)
+		{
+			m_SpeedUp = true;
+		}
+
+		m_LastBounceCounter = m_BounceCounter;
+		m_CurrentHitHorizontal = m_LastHitHorizontal;
+		m_CurrentHitVert = m_LastHitVert;
+	}
 
 }
 
@@ -81,7 +185,8 @@ void Ball::setSize(int height, int width)
 
 void Ball::setCollisionLines()
 {
-	int lineLength{ 10 };
+	// Collision line getting longer with speed
+	int lineLength{ int(m_Velocity /50.0f) };
 	// Lines go outwards from ball
 	m_CollisionLines[LeftTop].lineStart = { m_BallRect.x,				m_BallRect.y };
 	m_CollisionLines[LeftTop].lineEnd   = { m_BallRect.x - lineLength,	m_BallRect.y };
@@ -200,7 +305,7 @@ void Ball::handleCollision(SDL_Rect* targetRect)
 {
 	detectCollision(targetRect);
 
-	// For now will not work if ball is between stuff
+	// For now will not work well if ball is between stuff
 	if (m_CollisionDetected[LeftTop] || m_CollisionDetected[LeftBottom])
 	{
 		m_LastHitHorizontal = Left;

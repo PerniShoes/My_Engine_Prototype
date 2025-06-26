@@ -2,10 +2,10 @@
 
 Game::Game()
 	: m_Quit{ false }, m_E{ 0 }, m_BackgroundCheck{ MOUSE_OUT },
-	m_MousePosX{ 0 }, m_MousePosY{ 0 }, m_MouseInside{ false }, m_Speed{ 0 }, m_PosChangeTemp{ 0 }, m_Ball{ SDL_Point{900,100+ m_BorderGirth} },
-	m_BorderGirth{ 350 }, m_Player{ int(Window::GetWindowSize().x * 0.05),
+	m_Speed{ 0 }, m_PosChangeTemp{ 0 }, m_Ball{ SDL_Point{900,300+ m_BorderGirth}, 20, 20, 700.0f },
+	m_BorderGirth{ 20 }, m_Player{ 0 + 40 - 10,
 	0 + m_BorderGirth,
-	5}
+	5 }, m_TempMult{ 0.0f }, m_EnemyAi{ int(Window::GetWindowSize().x - 50.0f), 0 + m_BorderGirth }, m_MusicPlaying{ StopMusic }
 {
 
 	
@@ -126,26 +126,46 @@ void Game::Events()
 
 };
 
+void Game::handleMusic()
+{
+	if (m_MusicPlaying == StopMusic)
+	{
+		if (m_Gamemode == EndlessMadness)
+		{
+			m_Audio.PlayMusic(EisenfunkPong);
+		}
+		else if (m_Gamemode == Survival)
+		{
+			m_Audio.PlayMusic(HeliosLexica);
+		}
+		else
+		{
+			m_Audio.PlayMusic(PressPlayMusic);
+		}
+	}
+
+}
+
 void Game::HandleKeyEvents()
 {
 	m_Player.handleEvent(m_E);
-
+	
 	m_Speed = 1;
 	if (m_E.type == SDL_KEYDOWN)
 	{
 		switch (m_E.key.keysym.sym)
 		{
 		case SDLK_1:	
-			m_Audio.PlaySound(LowSound);
+			m_Audio.PlaySound(PaddleSoundEffect);
 			break;
 		case SDLK_2:
-			m_Audio.PlaySound(HighSound);
+			m_Audio.PlaySound(Score_sound);
 			break;
 		case SDLK_3:
-			m_Audio.PlaySound(MediumSound);
+			m_Audio.PlaySound(WallHitSoundEffect);
 			break;
 		case SDLK_4:
-			m_Audio.PlaySound(ScratchSound);
+			
 			break;
 		case SDLK_p:	
 			m_Audio.PlayMusic(PauseOrResume); 
@@ -199,11 +219,11 @@ void Game::HandleKeyEvents()
 			//m_BackgroundTextureProp.color.r += m_Value;
 			break;
 		case SDLK_w:
-			whichFrame = 0;
+			m_TempMult = 1.0f;
 			//m_BackgroundTextureProp.color.g -= m_Value;
 			break;
 		case SDLK_e:
-			whichFrame = 5;
+			m_TempMult = 0.0f;
 			//m_BackgroundTextureProp.color.b -= m_Value;
 			break;
 		case SDLK_UP:
@@ -230,7 +250,6 @@ void Game::HandleKeyEvents()
 			//m_FooAnimatedTextureProp.flipType = SDL_FLIP_VERTICAL;
 			break;
 
-
 		}
 	}
 
@@ -244,63 +263,94 @@ void Game::HandleMouseEvents()
 
 void Game::Logic()
 {
+	if (m_Gamemode == Survival)
+	{
+		// No point scores
+		// No ai
+		
+
+		// Stop ball until button is pressed to continue 
+		// Show final score, ball mult setting board shrinking settings also transparent yes or no
+		// and reset time
+		
+		// 
+		// Turn on wall on right
+
+
+	}
+
+
+	if (m_Gamemode == EndlessMadness)
+	{
+		// Yes point scores
+		
+		// m_ScoreToWin = some insane number
+		// Ai == unbeatable
+		// Player size and velocity fluctuating
+		// Board shrinking and ball mult overwritten
+		// Music change to PLAY PONG
+
+
+
+	}
+
+	if (m_Gamemode == Vs_Ai)
+	{
+		// Most basic mode
+		// No changes to score ball mult or board shrinking
+		// Stop game if score reached
+		// Ai difficulty increasing OR staying the same
+
+
+	}
+
+
 	m_Mouse.updateState();
 
-	//for (int index{ 0 }; index < (int)HB_TotalTextures; index++)
-	//{
-	//	if (m_Mouse.isMouseInside(m_Textures.getRect(static_cast<TextureList>(index))))
-	//	{
-	//		std::cout << "Mouse inside texture (Id): " << index << std::endl;
-	//	}
-	//}
+	//handleMusic();
+
+	ballScoreHandling();
+
+	//std::cout << (int)m_Ball.handleSoundEvents() << std::endl;
+	switch ((int)m_Ball.handleSoundEvents())
+	{
+	case (int)PaddleHit: m_Audio.PlaySound(PaddleSoundEffect); break;
+	case (int)WallHit: m_Audio.PlaySound(WallHitSoundEffect); break;
+	default: break;
+	}
+	
 
 
-	/*std::cout << "Right: "<< (int)m_Mouse.getButtonState(RightButton) << std::endl;
-
-	std::cout << "Left: "<< (int)m_Mouse.getButtonState(LeftButton) << std::endl;
-
-	std::cout << "Middle: " << (int)m_Mouse.getButtonState(MiddleButton) << std::endl;
-*/
-
-	//switch (m_BackgroundCheck)
-	//{
-	//case MOUSE_DOWN:
-	//	Debug::Print("Mouse clicked on m_BackgroundTexture!\n");
-	//	m_BackgroundCheck = MOUSE_OUT;
-	//	break;
-	//case MOUSE_UP:
-	//	Debug::Print("Mouse released on m_BackgroundTexture!\n");
-	//	m_BackgroundCheck = MOUSE_OUT;
-	//	break;
-	//case MOUSE_OVER_MOTION:
-	//	Debug::Print("Mouse is hovering over m_BackgroundTexture!\n");
-	//	m_BackgroundCheck = MOUSE_OUT;
-	//	break;
-	//default:
-	//	m_BackgroundCheck = MOUSE_OUT;
-	//	break;
-	//}
 	
 	m_BoardBorderBottom = { 0,Window::GetWindowSize().y - m_BorderGirth,Window::GetWindowSize().x,Window::GetWindowSize().y };
 	m_BoardBorderTop = { 0,0,Window::GetWindowSize().x,m_BorderGirth };
 	m_BoardBorderRightTest = {Window::GetWindowSize().x - m_BorderGirth,0, Window::GetWindowSize().x,Window::GetWindowSize().y};
 
 	m_Textures.setScale(PongPlayer, 1.0f);
-	m_Player.setVelocity(5.0f);
+	m_Player.setVelocity(500.0f);
 	m_Player.setSize(m_Textures.getRect(PongPlayer)->h, m_Textures.getRect(PongPlayer)->w);
 
-
-
-	m_Player.move(m_BorderGirth);
+	m_Player.move(m_BorderGirth/*, true, m_Ball.getPosition(), m_Ball.getVelocity()*/);
 	m_Textures.setPos(PongPlayer, m_Player.getPosition());
 
 
+	m_EnemyAi.setSize(m_Textures.getRect(EnemyPong)->h, m_Textures.getRect(EnemyPong)->w);
+	m_EnemyAi.move(m_BorderGirth, m_AiDifficulty, m_Ball.getPosition(),m_Ball.getVelocity());
+	m_Textures.setPos(EnemyPong, m_EnemyAi.getPosition());
+	
 
-	m_Ball.setVelocity(15.0f);
-	m_Ball.move(Sides::Bottom, Sides::Right);
-	m_Ball.handleCollision(&m_BoardBorderRightTest);
+
+
+
+	m_Ball.setVelocityMult(m_BallSpeedIncrease);
+	m_Ball.move(Sides::Top, Sides::Right);
+
+	m_Ball.handleCollision(m_Textures.getRect(EnemyPong));
+	//m_Ball.handleCollision(&m_BoardBorderRightTest);
 	m_Ball.handleCollision(&m_BoardBorderBottom);
 	m_Ball.handleCollision(&m_BoardBorderTop);
+
+
 	m_Ball.handleCollision(m_Textures.getRect(PongPlayer));
 	m_Ball.setSize(m_Textures.getRect(PongBall)->h, m_Textures.getRect(PongBall)->w);
 	m_Ball.setCollisionLines();
@@ -333,47 +383,76 @@ void Game::Rendering()
 
 	// Pack things into functions to clean this mess up:
 
-	m_Textures.render(BackGroundSpace, true);
+	switch (m_Gamemode)
+	{
+	case EndlessMadness:m_Textures.render(BackGroundBlackHole, true); break;
+	case Vs_Ai:			m_Textures.render(BackgroundDazzlingForest, true); break;
+	case Survival:		m_Textures.render(BackGroundSpace, true); break;
+	}
+	
+
 
 	SDL_Rect fullScreen{ 0,0, Window::GetWindowSize().x,Window::GetWindowSize().y };
 
 	SDL_SetRenderDrawBlendMode(Renderer::GetRenderer(), SDL_BLENDMODE_BLEND);
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), black.r, black.g, black.b, 200);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), black.r, black.g, black.b, 180);
 	SDL_RenderFillRect(Renderer::GetRenderer(), &fullScreen);
 
 	// Board borders
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, 100);
 	SDL_RenderFillRect(Renderer::GetRenderer(), &m_BoardBorderBottom);
 	SDL_RenderFillRect(Renderer::GetRenderer(), &m_BoardBorderTop);
-	SDL_RenderFillRect(Renderer::GetRenderer(), &m_BoardBorderRightTest);
+	//SDL_RenderFillRect(Renderer::GetRenderer(), &m_BoardBorderRightTest);
 
 	// Middle line 
-	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, white.a);
-	int middleLineSquareSize{ 7 };
-	SDL_Rect middleScreenLine{ int(Window::GetWindowSize().x / 2),0, middleLineSquareSize,middleLineSquareSize };
-	int indexMax {Window::GetWindowSize().y / middleLineSquareSize * 2};
+	SDL_SetRenderDrawColor(Renderer::GetRenderer(), white.r, white.g, white.b, 100);
+	int middleLineSquareSize{ 8 };
+	SDL_Rect middleScreenLine{ int(Window::GetWindowSize().x / 2)-middleLineSquareSize/2,0, middleLineSquareSize,middleLineSquareSize };
+	int indexMax{ (Window::GetWindowSize().y-m_BorderGirth*2) / (middleLineSquareSize*2) };
 	for (int i{ 0 }; i < indexMax; i++)
 	{
-		middleScreenLine.y = 0 + (middleLineSquareSize*2 * i);
+		middleScreenLine.y = middleLineSquareSize + m_BorderGirth + (((middleLineSquareSize *2) * i));
 		SDL_RenderFillRect(Renderer::GetRenderer(), &middleScreenLine);
 	}
 	//
 
 
-
-
 	// Foreground:
 
 
-	m_Ball.drawCollisionLines();
+	//m_Ball.drawCollisionLines();
 	m_Textures.render(PongBall);
 
+	m_Textures.render(EnemyPong);
 
+	switch (m_PlayerPlatformColor)
+	{
+	case Pwhite		:m_Textures.setColor(PongPlayer, SDL_Color{ 255,255,255 }); break;
+	case Pred		:m_Textures.setColor(PongPlayer, SDL_Color{ 255,0,0 }); break;
+	case Pblue		:m_Textures.setColor(PongPlayer, SDL_Color{ 0,0,255	}); break;
+	case Pgreen		:m_Textures.setColor(PongPlayer, SDL_Color{ 0,255,0 }); break;
+	case Pyellow	:m_Textures.setColor(PongPlayer, SDL_Color{ 255,255,0 }); break;
+	case Ppink		:m_Textures.setColor(PongPlayer, SDL_Color{ 255,51,204	}); break;
+	case Ppurple	:m_Textures.setColor(PongPlayer, SDL_Color{ 153,0,204 }); break;
+	case PlightBlue	:m_Textures.setColor(PongPlayer, SDL_Color{ 153,204,255 }); break;
+	case Porange	:m_Textures.setColor(PongPlayer, SDL_Color{ 255,153,51 }); break;
+	case almostTransparent:m_Textures.setColor(PongPlayer, SDL_Color{ 255,255,255 });
+		m_Textures.setAlpha(PongPlayer, 5);
+		break;
 
-
+	}
+	
 	m_Textures.render(PongPlayer);
 	//Debug::Print("X: ", m_Player.getPosition().x, "\n", "Y: ",m_Player.getPosition().y, "\n");
 
+	m_Textures.setPos(ScoreText, {int(Window::GetWindowSize().x / 2 - 75.0f-40.0f), int(Window::GetWindowSize().y * 0.05f) + m_BorderGirth});
+	m_Textures.changeText(ScoreText, std::to_string(m_PlayerScore));
+	m_Textures.render(ScoreText);
+
+
+	m_Textures.setPos(ScoreText, { int(Window::GetWindowSize().x / 2 + 75.0f), int(Window::GetWindowSize().y * 0.05f)+ m_BorderGirth });
+	m_Textures.changeText(ScoreText, std::to_string(m_AiScore));
+	m_Textures.render(ScoreText);
 
 	m_Textures.changeText(TimeText,  m_Time.getTimePassedFull()); 
 	m_Textures.setPos(TimeText, SDL_Point{
@@ -389,7 +468,6 @@ void Game::Rendering()
 
 };
 
-
 void Game::Close()
 {
 	
@@ -399,5 +477,22 @@ void Game::Close()
 	IMG_Quit();	
 	SDL_Quit();
 };
+
+void Game::ballScoreHandling()
+{
+	if (m_Ball.getPosition().x >= Window::GetWindowSize().x +50)
+	{
+		m_Ball.restartBall();
+		m_PlayerScore += 1;
+		m_Audio.PlaySound(Score_sound);
+	}
+	else if (m_Ball.getPosition().x < 0 - 50)
+	{
+		m_Ball.restartBall();
+		m_AiScore += 1;
+		m_Audio.PlaySound(Score_sound);
+	}
+	
+}
 
 

@@ -18,11 +18,11 @@ void Audio::SetPaths()
     // This needs to be better. Too much repetition 
     // No need to static_cast. C-style enum to int is safe)
 
-    m_SoundPath[int(ScratchSound)] = "Audio/Sounds/scratch.wav";
-    m_SoundPath[int(HighSound)] = "Audio/Sounds/high.wav";
-    m_SoundPath[int(MediumSound)] = "Audio/Sounds/medium.wav";
-    m_SoundPath[int(LowSound)] = "Audio/Sounds/low.wav";
-                
+    m_SoundPath[int(PaddleSoundEffect)] = "Audio/Sounds/PaddleEffect.mp3";
+    m_SoundPath[int(Score_sound)] = "Audio/Sounds/Score_sound.mp3";
+    m_SoundPath[int(WallHitSoundEffect)] = "Audio/Sounds/WallEffect.mp3";
+
+
     m_MusicPath[int(DefaultMusic)] = "Audio/Music/beat.wav";   
     m_MusicPath[int(HolyF)] = "Audio/Music/HolyFuck.mp3";  
     m_MusicPath[int(Pandemonium)] = "Audio/Music/Pandemonium.mp3";
@@ -36,11 +36,15 @@ void Audio::SetPaths()
     m_MusicPath[int(BeautifulMadness)] = "Audio/Music/BeautifulMadness.mp3";
     m_MusicPath[int(ALittleMessedUp)] = "Audio/Music/ALittleMessedUp.mp3";
 
+    m_MusicPath[int(PressPlayMusic)] = "Audio/Music/PressPlayMusic.mp3";
+    m_MusicPath[int(EisenfunkPong)] = "Audio/Music/EisenfunkPong.mp3";
+    m_MusicPath[int(HeliosLexica)] = "Audio/Music/Helios.mp3";
+
 };
 
 void Audio::PlaySound(SoundsList soundId, int loopAmount, int channel) const
 {
-    Mix_MasterVolume(15);
+    Mix_MasterVolume(128);
 
     Mix_PlayChannel(channel, m_Sound[static_cast<int>(soundId)], loopAmount);
     
@@ -153,6 +157,17 @@ void Audio::AdjustVolume(int musicId) const
     case 11:
         Mix_VolumeMusic(m_Volume.Hold);     
         break;
+    case 12:
+        Mix_VolumeMusic(m_Volume.EisenfunkPong);
+        break;
+    case 13:
+        Mix_VolumeMusic(m_Volume.HeliosLexica);
+        break;
+    case 14:
+        Mix_VolumeMusic(m_Volume.PressPlayMusic);
+        break;
+
+
     default:
         Mix_VolumeMusic(64);
     }
