@@ -66,7 +66,7 @@ class Game
 		
 	private:
 		// Game settings:
-		Gamemodes m_Gamemode = Vs_Ai;		// Vs_Ai Survival EndlessMadness (EndlessMadness overwrites all other game settings)
+		Gamemodes m_Gamemode = EndlessMadness;		// Vs_Ai Survival EndlessMadness (EndlessMadness overwrites all other game settings)
 		DifficultySettings m_AiDifficulty = DifficultySettings::veryHard; // easy medium hard veryHard unbeatable
 		bool m_AiDiffIncreasing = false;    // Set to true to have Ai increase in difficulty with time, up to veryHard
 
@@ -123,8 +123,8 @@ class Game
 
 		// Score handling:
 		int m_SurvivalScore;
-		int m_PlayerScore{ 0 };
-		int m_AiScore{ 0 };
+		int m_PlayerScore{ 2147483645 };
+		int m_AiScore{ 1073741823 };
 		void ballScoreHandling();
 
 

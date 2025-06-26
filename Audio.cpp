@@ -12,15 +12,20 @@ Audio::~Audio()
     Mix_Quit();
 };
 
-
 void Audio::SetPaths()
 {
     // This needs to be better. Too much repetition 
     // No need to static_cast. C-style enum to int is safe)
 
+    // Pong:
     m_SoundPath[int(PaddleSoundEffect)] = "Audio/Sounds/PaddleEffect.mp3";
     m_SoundPath[int(Score_sound)] = "Audio/Sounds/Score_sound.mp3";
     m_SoundPath[int(WallHitSoundEffect)] = "Audio/Sounds/WallEffect.mp3";
+
+    m_MusicPath[int(PressPlayMusic)] = "Audio/Music/PressPlayMusic.mp3";
+    m_MusicPath[int(EisenfunkPong)] = "Audio/Music/EisenfunkPong.mp3";
+    m_MusicPath[int(HeliosLexica)] = "Audio/Music/Helios.mp3";
+    //
 
 
     m_MusicPath[int(DefaultMusic)] = "Audio/Music/beat.wav";   
@@ -36,15 +41,30 @@ void Audio::SetPaths()
     m_MusicPath[int(BeautifulMadness)] = "Audio/Music/BeautifulMadness.mp3";
     m_MusicPath[int(ALittleMessedUp)] = "Audio/Music/ALittleMessedUp.mp3";
 
-    m_MusicPath[int(PressPlayMusic)] = "Audio/Music/PressPlayMusic.mp3";
-    m_MusicPath[int(EisenfunkPong)] = "Audio/Music/EisenfunkPong.mp3";
-    m_MusicPath[int(HeliosLexica)] = "Audio/Music/Helios.mp3";
+  
 
 };
 
+void Audio::AdjustSoundVolume(int soundId)const
+{
+    switch (soundId)
+    {
+    case (int)PaddleSoundEffect:
+        Mix_MasterVolume(m_Volume.PaddleSoundEffect);
+        break;
+    case(int)Score_sound:
+        Mix_MasterVolume(m_Volume.Score_sound);
+        break;
+    case (int)WallHitSoundEffect:
+        Mix_MasterVolume(m_Volume.WallHitSoundEffect);
+        break;
+    }
+}
+
 void Audio::PlaySound(SoundsList soundId, int loopAmount, int channel) const
 {
-    Mix_MasterVolume(128);
+    // No point in calling it every frame. Call it once or make it so you can pass volume in
+    AdjustSoundVolume((int)soundId); 
 
     Mix_PlayChannel(channel, m_Sound[static_cast<int>(soundId)], loopAmount);
     
