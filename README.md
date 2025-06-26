@@ -13,12 +13,14 @@ After finishing Pong remake, I will be mainly working on improving the engine, t
 ### Current task list:
 Done:
 - MouseHandler, Player classes added
- 
-Pong game remake:
+- Almost everything for Pong
 - Make movement frame independent
 - Simple collision checks (all needed for cool Pong)
 - Music that adapts to game state
-- Animated background based on ball position
+- Various backgrounds
+- Added user settings
+Pong game remake:
+- Some tasks, written down elsewhere
 #
 
 ### Done:
