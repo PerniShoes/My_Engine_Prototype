@@ -307,7 +307,7 @@ void Game::Logic()
 
 	m_Mouse.updateState();
 
-	//handleMusic();
+	handleMusic();
 
 	ballScoreHandling();
 
@@ -330,7 +330,7 @@ void Game::Logic()
 	m_Player.setVelocity(500.0f);
 	m_Player.setSize(m_Textures.getRect(PongPlayer)->h, m_Textures.getRect(PongPlayer)->w);
 
-	m_Player.move(m_BorderGirth/*, true, m_Ball.getPosition(), m_Ball.getVelocity()*/);
+	m_Player.move(m_BorderGirth, true, m_Ball.getPosition(), m_Ball.getVelocity());
 	m_Textures.setPos(PongPlayer, m_Player.getPosition());
 
 
@@ -445,7 +445,36 @@ void Game::Rendering()
 	m_Textures.render(PongPlayer);
 	//Debug::Print("X: ", m_Player.getPosition().x, "\n", "Y: ",m_Player.getPosition().y, "\n");
 
-	m_Textures.setPos(ScoreText, {int(Window::GetWindowSize().x / 2 - 75.0f-40.0f), int(Window::GetWindowSize().y * 0.05f) + m_BorderGirth});
+
+	// 9 being nine zeros in 2 147 483 647 (max score)
+	int spacing{ 0 };
+	int placeHolderCalc{ 0 };
+	placeHolderCalc = m_PlayerScore;
+
+	// Int overflow protection xd...
+	if (m_PlayerScore >= 2147483647)
+	{
+		m_PlayerScore = 0;
+	}
+	if (m_AiScore >= 2147483647)
+	{
+		m_AiScore = 0;
+	}
+
+	for (int i{ 0+1 }; i < 9+1; i++)
+	{
+		placeHolderCalc /= 10*i;
+		if (placeHolderCalc >= 1)
+		{
+			spacing = 1*i;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	m_Textures.setPos(ScoreText, {int(Window::GetWindowSize().x / 2 - 75.0f-35.0f-(70.0f*spacing)), int(Window::GetWindowSize().y * 0.05f) + m_BorderGirth});
 	m_Textures.changeText(ScoreText, std::to_string(m_PlayerScore));
 	m_Textures.render(ScoreText);
 

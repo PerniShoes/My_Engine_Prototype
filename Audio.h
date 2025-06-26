@@ -33,6 +33,8 @@ enum class MusicList
 	ThatsWhatILike = 9,
 	Gold = 10,
 	Hold = 11,
+
+	// Pong:
 	EisenfunkPong = 12,
 	HeliosLexica = 13,
 	PressPlayMusic = 14,
@@ -79,7 +81,7 @@ public:
 		const int PressPlayMusic = 24;
 
 		const int PaddleSoundEffect = 128;
-		const int Score_sound = 128;
+		const int Score_sound = 96;
 		const int WallHitSoundEffect = 128;
 
 	}m_Volume;
@@ -87,6 +89,7 @@ public:
 
 private:
 
+	void AdjustSoundVolume(int soundId)const;
 	void AdjustVolume(int musicId) const;
 	void SetPaths();
 	bool LoadWAV(Mix_Chunk*& soundStorage, const std::string& path);
