@@ -1,29 +1,17 @@
 # My-engine-prototype
 Working on a game engine, while learning SDL2. 
-After finishing Pong remake, I will be mainly working on improving the engine, then making a bigger game.
-(hopefuly finding a C++ job in the meantime :D)
 
-### Main goals: 
-- Learning C++ and SDL2.
-- Generic and simple to use, bug free engine with:
-- Audio, Textures, simple Physics  (After pong: Proper Physics, Level editor, Sandbox-like capabilities)
-- Modular code
-#
+# Pong game done 
+Some code needs cleaning up, going to focus on learning something new instead ;D.
 
-### Current task list:
-Done:
-- MouseHandler, Player classes added
-- Almost everything for Pong
-- Make movement frame independent
-- Simple collision checks (all needed for cool Pong)
-- Music that adapts to game state
-- Various backgrounds
-- Added user settings
-Pong game remake:
-- Some tasks, written down elsewhere
-#
+# Game Settings:
+<img width="713" alt="Game settings" src="https://github.com/user-attachments/assets/79ff3ff1-ff40-4128-ab16-4bf0a8f325b7" />
 
-### Done:
-- Audio working
-- Texture handler (texture refactor) DONE!
-- All code cleaned up
+# EndlesssMadness:
+<img width="1010" alt="EndlessMadness" src="https://github.com/user-attachments/assets/a366b311-2a02-4f89-959f-3cceb9db338d" />
+
+# Survival:
+<img width="958" alt="EndScreen Survival" src="https://github.com/user-attachments/assets/ed09bf36-56ba-4de4-92e2-1ef24fe2101a" />
+
+# Vs Ai
+<img width="960" alt="EndScreen Vs_Ai" src="https://github.com/user-attachments/assets/3e23a2d6-f6e6-4acc-9109-329373bea867" />
