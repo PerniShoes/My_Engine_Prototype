@@ -24,9 +24,10 @@ public:
     const Uint64 getTimePassedInHr(); 
 
     const std::string getTimePassedFull();
+    void restartTime();
 
 private:
     
-    Uint64 m_TimePassed; //Not used for now???
+    Uint64 m_TimePaused; //Not used for now???
     std::string m_FullTimePassed;
 };

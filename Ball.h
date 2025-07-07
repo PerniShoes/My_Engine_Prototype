@@ -57,7 +57,7 @@ class Ball
 {
 
 public:
-    Ball(SDL_Point startingPos = {0, 0}, int width = 20, int height = 20, float velocity = 5.0f);
+    Ball(SDL_Point startingPos = {0, 0}, int width = 20, int height = 20, float velocity = 5.0f, bool velocityCapped = true);
     ~Ball();
 
 
@@ -91,8 +91,8 @@ private:
    
     SDL_Rect m_BallRect;
 
-    float m_MaxVelocity{ 8000 };
-    bool m_VelocityCap{ true };
+    float m_MaxVelocity{ 6000 };
+    bool  m_VelocityCapped{ true };
     float m_StartingVelocity;
     float m_Velocity;
     float m_VelocityY;
