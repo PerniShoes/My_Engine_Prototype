@@ -36,9 +36,17 @@ void TextureHandler::setAllPaths()
 	setClipProp(BlueEffects, { 0,0,32,32 });
 
 	// Fonts
-	setPath(MainText, "Fonts/lazy.ttf");
-	initText(MainText, "THIS IS MADNESS");
-	setFont(MainText);
+	setPath(QuitText, "Fonts/lazy.ttf");
+	initText(QuitText, "Esc to quit");
+	setFont(QuitText);
+
+	setPath(RestartText, "Fonts/lazy.ttf");
+	initText(RestartText, "R to restart");
+	setFont(RestartText);
+
+	setPath(EndScreenText, "Fonts/lazy.ttf");
+	initText(EndScreenText, "Place holder");
+	setFont(EndScreenText);
 
 	setPath(TimeText, "Fonts/Digital Dismay.ttf");
 	initText(TimeText, "Place Holder", 48);
@@ -166,7 +174,7 @@ void TextureHandler::initText(TextureList textureId, const char* text, int ptSiz
 	m_TextureProperties[textureIdInt].m_Text = static_cast<std::string>(text);	
 	m_TextureProperties[textureIdInt].m_PtSize = ptSize;
 	m_TextureProperties[textureIdInt].m_Color = color;
-
+	
 };
 
 void TextureHandler::setFont(TextureList textureId)
@@ -252,8 +260,9 @@ void TextureHandler::setScale(TextureList textureId, float ratio)
 	m_TextureProperties[static_cast<int>(textureId)].m_Scale = ratio;
 }
 
-void TextureHandler::setColor(TextureList textureId, SDL_Color color) const
+void TextureHandler::setColor(TextureList textureId, SDL_Color color) 
 {
+	m_TextureProperties[static_cast<int>(textureId)].m_Color = color;
 	SDL_SetTextureColorMod(m_Texture[static_cast<int>(textureId)], color.r, color.g, color.b);
 }
 

@@ -2,7 +2,7 @@
 
 
 TimeHandler::TimeHandler()
-    :m_TimePassed{ 0 }, m_FullTimePassed{""}
+    :m_TimePaused{ 0 }, m_FullTimePassed{""}
 {
 
 }
@@ -22,22 +22,22 @@ void TimeHandler::startTime()
 
 const Uint64 TimeHandler::getTimePassedInMs()
 {
-    return SDL_GetTicks64();
+    return (SDL_GetTicks64()) - m_TimePaused;
 }
 
 const Uint64 TimeHandler::getTimePassedInSec()
 {  
-    return SDL_GetTicks64() / 1000;
+    return ((SDL_GetTicks64() - m_TimePaused) / 1000);
 }
 
 const Uint64 TimeHandler::getTimePassedInMin()
 {
-    return SDL_GetTicks64() / 60000;
+    return ((SDL_GetTicks64() - m_TimePaused) / 60000);
 }
 
 const Uint64 TimeHandler::getTimePassedInHr()
 {
-    return SDL_GetTicks64() / 3600000;
+    return ((SDL_GetTicks64() - m_TimePaused) / 3600000);
 }
 
 const std::string TimeHandler::getTimePassedFull()
@@ -49,50 +49,50 @@ const std::string TimeHandler::getTimePassedFull()
     std::string space{ "" };
 
 
-    if ((SDL_GetTicks64() / 3600000 % 60) >= 10)
+    if (((SDL_GetTicks64() - m_TimePaused) / 3600000 % 60)  >= 10)
     {
         hours = std::to_string(SDL_GetTicks64() / 3600000 % 60) + ":";
     }
-    else if ((SDL_GetTicks64() / 3600000 % 60) >= 1)
+    else if (((SDL_GetTicks64() - m_TimePaused) / 3600000 % 60) >= 1)
     {
-        hours = "0" + std::to_string(SDL_GetTicks64() / 3600000 % 60) + ":";
+        hours = "0" + std::to_string((SDL_GetTicks64() - m_TimePaused) / 3600000 % 60) + ":";
     }
     else
     {
         hours = "";
     }
 
-    if ((SDL_GetTicks64() / 60000 % 60) >= 10)
+    if (((SDL_GetTicks64() - m_TimePaused) / 60000 % 60) >= 10)
     {
-        minutes = std::to_string(SDL_GetTicks64() / 60000 % 60) + ":";
+        minutes = std::to_string((SDL_GetTicks64() - m_TimePaused) / 60000 % 60) + ":";
     }
-    else if ((SDL_GetTicks64() / 60000 % 60) >= 1)
+    else if (((SDL_GetTicks64() - m_TimePaused) / 60000 % 60) >= 1)
     {
-        minutes = "0" + std::to_string(SDL_GetTicks64() / 60000 % 60) + ":";
+        minutes = "0" + std::to_string((SDL_GetTicks64() - m_TimePaused) / 60000 % 60) + ":";
     }
     else
     {
         minutes ="";
     }
    
-    if ((SDL_GetTicks64() / 1000 % 60) >= 10)
+    if (((SDL_GetTicks64() - m_TimePaused) / 1000 % 60) >= 10)
     {
-        seconds = std::to_string(SDL_GetTicks64() / 1000 % 60);
+        seconds = std::to_string((SDL_GetTicks64() - m_TimePaused) / 1000 % 60);
     }
     else
     {
-        seconds = "0" + std::to_string(SDL_GetTicks64() / 1000 % 60);
+        seconds = "0" + std::to_string((SDL_GetTicks64() - m_TimePaused) / 1000 % 60);
     }
 
 
-    miliseconds = ":" + std::to_string((SDL_GetTicks64() % 1000) / 10);
+    miliseconds = ":" + std::to_string(((SDL_GetTicks64() - m_TimePaused) % 1000) / 10);
 
 
-    if ((SDL_GetTicks64() / 3600000) >= 1)
+    if (((SDL_GetTicks64() - m_TimePaused) / 3600000) >= 1)
     {
         space = "";
     }
-    else if ((SDL_GetTicks64() / 60000) >= 1)
+    else if (((SDL_GetTicks64() - m_TimePaused) / 60000) >= 1)
     {
         space = "     ";
     }
@@ -106,4 +106,10 @@ const std::string TimeHandler::getTimePassedFull()
 
 
     return m_FullTimePassed;
+}
+
+void TimeHandler::restartTime()
+{
+    m_TimePaused = SDL_GetTicks64();
+
 }

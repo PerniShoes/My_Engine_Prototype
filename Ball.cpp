@@ -2,12 +2,13 @@
 using enum Sides;
 using enum CollisionLinesId;
 
-Ball::Ball(SDL_Point startingPos, int width, int height, float velocity)
+Ball::Ball(SDL_Point startingPos, int width, int height, float velocity, bool velocityCapped)
 	: m_BallRect{ startingPos.x, startingPos.y, startingPos.x + width, startingPos.y + height },
 	m_StartingVelocity{velocity}, m_Velocity{velocity}, m_VelocityY{0}, m_VelocityX{0}, m_LastHitVert{NoCollision}, m_LastHitHorizontal{NoCollision},
 	m_CurrentHitHorizontal{ NoCollision }, m_CurrentHitVert{ NoCollision }, m_BounceCounter{ -2 /* Needs -1 to work */ }, 
-	m_VelocityMult{ 1.005f }, m_LastBounceCounter{ m_BounceCounter }, m_SpeedUp{ false }, m_VerticalVelocityRandomizer{ 1.0f }
-
+	m_VelocityMult{ 1.005f }, m_LastBounceCounter{ m_BounceCounter },
+	m_SpeedUp{ false }, m_VerticalVelocityRandomizer{ 1.0f }, m_VelocityCapped{ velocityCapped }
+	// fix initializer order, initialize bounceCounter
 
 {
 	setPos({ Window::GetWindowSize().x / 2, Window::GetWindowSize().y / 2 });
@@ -32,7 +33,7 @@ void Ball::setVelocity(float velocity)
 void Ball::restartBall()
 {
 	m_AccumulatedTime = 0;
-	setPos({ Window::GetWindowSize().x / 2, Window::GetWindowSize().y / 2 });
+	setPos({ Window::GetWindowSize().x / 2-m_BallRect.w/2, Window::GetWindowSize().y / 2 });
 	m_Velocity = m_StartingVelocity;
 
 }
@@ -94,11 +95,11 @@ void Ball::move(Sides startingColisionVert, Sides startingCollisionHorizontal)
 		m_SpeedUp = false;
 	}
 
-	if (m_VelocityCap && m_Velocity > m_MaxVelocity)
-	{
-		m_Velocity = m_MaxVelocity;
-	}
-
+	if (m_VelocityCapped && m_Velocity > m_MaxVelocity)
+		{
+			m_Velocity = m_MaxVelocity;
+		}
+	
 	if (m_MoveDelay > 1 && m_AccumulatedTime > 1)
 	{
 		m_VelocityX = (m_Velocity * elapsedTime);
@@ -114,7 +115,7 @@ void Ball::move(Sides startingColisionVert, Sides startingCollisionHorizontal)
 			m_LastHitHorizontal = startingCollisionHorizontal;
 		}
 
-		switch (m_LastHitHorizontal)
+		switch (m_LastHitHorizontal) // Put default case handling
 		{
 		case Left: m_BallRect.x += (int)m_VelocityX; break;
 		case Right: m_BallRect.x -= (int)m_VelocityX; break;

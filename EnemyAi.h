@@ -24,12 +24,12 @@ enum class DifficultySettings
 class EnemyAi
 {
     public:
-        EnemyAi(int posX = 0, int posY = 0, DifficultySettings difficulty = DifficultySettings::easy);
+        EnemyAi(int posX = 0, int posY = 0, DifficultySettings difficulty = DifficultySettings::easy, bool diffIncrease = false);
         ~EnemyAi();
 
 
         void handleEvent();
-        void move(int borderGirth, DifficultySettings difficulty, SDL_Point ballPos, float ballVelocity);
+        void move(int borderGirth, SDL_Point ballPos, float ballVelocity);
         void setSize(int height, int width);
 
         void increasingDifficulty(int speed, bool turnOn); // From 1 to 5
@@ -37,8 +37,7 @@ class EnemyAi
         // 300 400 500 600 
         SDL_Point getPosition() const;
 
-        void setDifficulty();
-
+        void setDifficulty(DifficultySettings difficulty);
 
 
     private:
@@ -58,7 +57,9 @@ class EnemyAi
         TimeHandler m_Time;
         float m_LastTick;
 
-        int m_DifficultySetting;
+        DifficultySettings m_StartingDifficultySetting;
+        DifficultySettings m_DifficultySetting;
+        bool m_DifficultyIncreasing;
 
     };
 

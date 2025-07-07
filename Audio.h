@@ -59,8 +59,8 @@ public:
 	// Add some "music player" functionality, Ui or just "next, previous, skip, etc"
 
 	bool LoadAudio();
-	void PlaySound(SoundsList soundId, int loopAmount = 0, int channel = -1)const;
-	void PlayMusic(MusicList musicId, int loopAmount = 10);
+	void PlaySound(SoundsList soundId, int volumePercentage = 100, int loopAmount = 0, int channel = -1)const;
+	void PlayMusic(MusicList musicId, int volumePercentage = 100, int loopAmount = 10);
 
 	struct VolumeList
 	{
@@ -76,21 +76,20 @@ public:
 		const int ThatsWhatILike = 48; 
 		const int Gold = 32;
 		const int Hold = 32;
-		const int EisenfunkPong = 16;
-		const int HeliosLexica = 16;
-		const int PressPlayMusic = 24;
+		const int EisenfunkPong = 128;
+		const int HeliosLexica = 128;
+		const int PressPlayMusic = 128;
 
 		const int PaddleSoundEffect = 128;
-		const int Score_sound = 96;
+		const int Score_sound = 64;
 		const int WallHitSoundEffect = 128;
 
 	}m_Volume;
 
-
 private:
 
-	void AdjustSoundVolume(int soundId)const;
-	void AdjustVolume(int musicId) const;
+	void AdjustSoundVolume(int soundId, int volumePercentage)const;
+	void AdjustVolume(int musicId, int volumePercentage) const;
 	void SetPaths();
 	bool LoadWAV(Mix_Chunk*& soundStorage, const std::string& path);
 	bool LoadMusic(Mix_Music*& musicStorage, const std::string& path);

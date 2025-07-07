@@ -19,7 +19,8 @@
 	// 
 	// 
 	// Or if feeling fancy (DON'T xD!) I could have things like setAlphaMany(textureId listOfIds); to apply something to many at once
-
+	
+	
 
 enum class TextureList
 {
@@ -33,14 +34,16 @@ enum class TextureList
 	
 	// Without hitbox:
 
-	MainText = 5,
+	QuitText = 5,
 	BlueEffects = 6,
 	BackGroundSpace = 7,
 	ScoreText = 8,
 	BackGroundBlackHole = 9,
 	BackgroundDazzlingForest = 10,
+	RestartText = 11,
+	EndScreenText = 12,
 
-	TotalTextures = 11
+	TotalTextures = 13
 	
 };
 
@@ -80,7 +83,7 @@ public:
 
 	void setScaleAll(float ratio = 1.0f);
 	void setScale(TextureList textureId, float ratio = 1.0f); // Add functionality to only scale x or y
-	void setColor(TextureList textureId, SDL_Color color) const;
+	void setColor(TextureList textureId, SDL_Color color);
 	void setAlpha(TextureList textureId, Uint8 alpha) const;
 	void setBlendMode(TextureList textureId, SDL_BlendMode blendMode) const;
 
@@ -91,7 +94,7 @@ public:
 	// 0 1 2 3 4 
 	// 5 6 7 8 9
 	void animate(TextureList textureId, int spriteNumber, float speed = 12.0f);
-	void changeText(TextureList textureId, std::string text); // Can add Color and Font changeability	
+	void changeText(TextureList textureId, std::string text); // Can add Color and Font changeability	 
 	void setCurrentClip(TextureList textureId, int frameNumber);
 	SDL_Rect* getRect(TextureList textureId);
 
